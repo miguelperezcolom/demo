@@ -1,0 +1,5935 @@
+swagger: '2.0'
+info:
+  description: API for travel agents
+  version: 0.1.23
+  title: EasyTravelApi
+host: test.easytravelapi.com
+basePath: /rest
+schemes:
+  - https
+paths:
+  /{authtoken}/activity/available:
+    get:
+      summary: Get available activities
+      description: By passing a resort and holidays dates you get a list of the available activities
+      operationId: getAvailableActivities
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: start
+          in: query
+          description: Holidays start date in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: resorts
+          in: query
+          description: Resort ID. You can get it from commons/getportfolio
+          required: false
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableActivitiesRS'
+  /{authtoken}/activity/booking:
+    post:
+      summary: Book an activity
+      description: Here you can confirm an activity booking. You must provide a price key and some additional data (lead name, comments, ...)
+      operationId: bookActivity
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/BookActivityRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BookActivityRS'
+  /{authtoken}/activity/check/{key}:
+    get:
+      summary: Check activity availability
+      description: By passing a price key you get extra info
+      operationId: checkActivity
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: key
+          in: path
+          description: The activity price key, as provided in the /activity/available step
+          required: true
+          type: string
+        - name: date
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: adults
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: children
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: variant
+          in: query
+          required: false
+          type: string
+        - name: shift
+          in: query
+          required: false
+          type: string
+        - name: pickup
+          in: query
+          required: false
+          type: string
+        - name: activityLanguage
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CheckActivityRS'
+  /{authtoken}/activity/filter:
+    get:
+      summary: Get available activities filtered
+      description: By passing a resort and holidays dates you get a list of the available activities
+      operationId: getFilteredActivities
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: start
+          in: query
+          description: Holidays start date in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: resourceid
+          in: query
+          description: Resort ID. You can get it from commons/getportfolio
+          required: false
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: minprice
+          in: query
+          description: Min price range to filter
+          required: false
+          type: number
+          format: double
+        - name: maxprice
+          in: query
+          description: Max price range to filter
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableActivitiesRS'
+  /{authtoken}/activity/pricedetails/{key}:
+    get:
+      summary: Get activity price details
+      description: By passing a price key you get extra info
+      operationId: getActivityPriceDetails
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: key
+          in: path
+          description: The activity price key, as provided in the /activity/available step
+          required: true
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: supplements
+          in: query
+          required: false
+          type: string
+        - name: coupon
+          in: query
+          description: Discount coupons
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetActivityPriceDetailsRS'
+  /{authtoken}/activity/rates/{activityId}:
+    get:
+      summary: Get activity rates
+      description: By passing a price key you get extra info
+      operationId: getActivityRates
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: activityId
+          in: path
+          description: The activity price key, as provided in the /activity/available step
+          required: true
+          type: string
+        - name: date
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetActivityRatesRS'
+  /{authtoken}/agents/login:
+    post:
+      summary: Use this method to login the tickets app
+      description: ''
+      operationId: login
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/GetLoginRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetLoginRS'
+  /{authtoken}/agents/passengerdetails:
+    get:
+      summary: Get available generic products
+      description: you get a list of the available generic products by type
+      operationId: getPassengerDetails
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: q
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetPassengerDetailsRS'
+  /{authtoken}/agents/plainlist:
+    get:
+      summary: Use this method to get  all lists of available activities for an agent
+      description: ''
+      operationId: getPlainList
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: user
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetPlainListRS'
+  /{authtoken}/agents/productioncenters:
+    get:
+      summary: Get available generic products
+      description: you get a list of the available generic products by type
+      operationId: getProductionCentersList
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: user
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetProductionCentersListRS'
+  /{authtoken}/agents/updatebookings:
+    post:
+      summary: Use this method to syncronize data from offline tickets app
+      description: ''
+      operationId: updateBookings
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/GetUpdatedCartsRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UpdateBookingRS'
+  /{authtoken}/channel/confirm:
+    post:
+      summary: Use this method to confirm or reject services
+      description: ''
+      operationId: confirmServices
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/ConfirmServicesRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ConfirmServicesRS'
+  /{authtoken}/channel/granted:
+    get:
+      summary: Use this method to know which hotels are you allowed to update. It provides the ids to be used by the channel manager
+      description: ''
+      operationId: getGrantedHotels
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetGrantedHotelsRS'
+  /{authtoken}/channel/hotel/inventory:
+    post:
+      summary: Use this method to update hotel inventory
+      description: ''
+      operationId: update
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/UpdateRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UpdateRS'
+  /{authtoken}/channel/roominglist:
+    get:
+      summary: Use this method to download the list of hotel bookings
+      description: ''
+      operationId: getRoomingList
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: confirmedfrom
+          in: query
+          description: Starting date you want service bookings confirmed from. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: confirmedto
+          in: query
+          description: Ending date you want service bookings confirmed to. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: startingfrom
+          in: query
+          description: Starting date you want service bookings starting from. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: startingto
+          in: query
+          description: Ending date you want service bookings starting from. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetRoomingListRS'
+  /{authtoken}/circuit/available:
+    get:
+      summary: Get available circuits
+      description: By passing a resort and holidays dates you get a list of the available circuits
+      operationId: getAvailableCircuits
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableCircuitsRS'
+  /{authtoken}/circuit/booking:
+    post:
+      summary: Book a circuit
+      description: Here you can confirm a circuit booking. You must provide a price key and some additional data (lead name, comments, ...)
+      operationId: bookCircuit
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/BookCircuitRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BookCircuitRS'
+  /{authtoken}/circuit/check/{key}:
+    get:
+      summary: Check circuit availability
+      description: By passing a price key you get extra info
+      operationId: checkCircuit
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: key
+          in: path
+          description: The activity price key, as provided in the /activity/available step
+          required: true
+          type: string
+        - name: date
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: adults
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: children
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: variant
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CheckCircuitRS'
+  /{authtoken}/circuit/filter:
+    get:
+      summary: Get available circuits filtered
+      description: ''
+      operationId: getFilteredCircuits
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: labels
+          in: query
+          description: Holidays start date in YYYYMMDD format
+          required: false
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: minprice
+          in: query
+          description: Min price range to filter
+          required: false
+          type: number
+          format: double
+        - name: maxprice
+          in: query
+          description: Max price range to filter
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableCircuitsRS'
+  /{authtoken}/circuit/pricedetails/{key}:
+    get:
+      summary: Get circuit price details
+      description: By passing a price key you get extra info
+      operationId: getCircuitPriceDetails
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: key
+          in: path
+          description: The circuit price key, as provided in the /circuit/available step
+          required: true
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: supplements
+          in: query
+          required: false
+          type: string
+        - name: coupon
+          in: query
+          description: Discount coupons
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetCircuitPriceDetailsRS'
+  /{authtoken}/circuit/rates/{key}:
+    get:
+      summary: Get circuit rates
+      description: By passing a price key you get extra info
+      operationId: getCircuitRates
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: key
+          in: path
+          description: The circuit price key, as provided in the /circuit/available step
+          required: true
+          type: string
+        - name: date
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetCircuitRatesRS'
+  /{authtoken}/cms/activityavailabilitycalendar:
+    get:
+      summary: Use this method to know which hotels are available and their prices
+      description: ''
+      operationId: getActivityAvailabilityCalendar
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: resorts
+          in: query
+          description: The comma separated list of resorts you are interested in
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetActivityAvailabilityCalendarRS'
+  /{authtoken}/cms/activitychecklist:
+    get:
+      summary: Use this method to get  all lists of available activities in a given date
+      description: ''
+      operationId: getActivityCheckList
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: date
+          in: query
+          description: 'Date of activities '
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetActivityCheckListRS'
+  /{authtoken}/cms/cartbooking:
+    post:
+      summary: Use this method to syncronize data from offline tickets app
+      description: ''
+      operationId: cartBooking
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/BookCMSRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BookCMSRS'
+  /{authtoken}/cms/cartcompletion:
+    post:
+      summary: Use this method to syncronize data from offline tickets app
+      description: ''
+      operationId: cartCompletion
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/CartCompletionRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CartCompletionRS'
+  /{authtoken}/cms/checkticket:
+    get:
+      summary: Use this method to validate a ticket QR code with an activity's event
+      description: ''
+      operationId: checkTicket
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: eventId
+          in: query
+          description: Event Id
+          required: false
+          type: string
+        - name: qrcode
+          in: query
+          description: 'ticket''s QR Code '
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CheckTicketRS'
+  /{authtoken}/cms/circuitavailabilitycalendar:
+    get:
+      summary: Use this method to know which hotels are available and their prices
+      description: ''
+      operationId: getCircuitAvailabilityCalendar
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: circuit
+          in: query
+          description: The comma separated list of resorts you are interested in
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetActivityAvailabilityCalendarRS'
+  /{authtoken}/cms/eventchecklist:
+    get:
+      summary: Use this method to get  all lists of available events in a given excursion date
+      description: ''
+      operationId: getEventCheckList
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: date
+          in: query
+          description: Activity Date
+          required: false
+          type: integer
+          format: int32
+        - name: activityId
+          in: query
+          description: Activity Id
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetEventCheckListRS'
+  /{authtoken}/cms/genericavailabilitycalendar:
+    get:
+      summary: Use this method to know which hotels are available and their prices
+      description: ''
+      operationId: getGenericAvailabilityCalendar
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: product
+          in: query
+          description: The comma separated list of resorts you are interested in
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetActivityAvailabilityCalendarRS'
+  /{authtoken}/cms/hotelavailabilitycalendar:
+    get:
+      summary: Use this method to know which hotels are available and their prices
+      description: ''
+      operationId: getHotelAvailabilityCalendar
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: resorts
+          in: query
+          description: The comma separated list of resorts you are interested in
+          required: false
+          type: string
+        - name: checkin
+          in: query
+          description: The locale checkin date in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: checkout
+          in: query
+          description: The locale checkout date in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: occupancies
+          in: query
+          description: List comma separated list of occupancies you need in <nr of rooms>x<pax>[-<age>]* format
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetHotelAvailabilityCalendarRS'
+  /{authtoken}/cms/initialconfig:
+    get:
+      summary: Use this method to know which hotels are available and their prices
+      description: ''
+      operationId: getInitialConfig
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetInitialConfigRS'
+  /{authtoken}/cms/login:
+    post:
+      summary: Use this method to login the tickets app
+      description: ''
+      operationId: loginToTicketsApp
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/GetLoginRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetLoginRS'
+  /{authtoken}/cms/offlinechecklist:
+    get:
+      summary: Use this method to get  all lists of available activities in a given date
+      description: ''
+      operationId: getOfflineCheckList
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetOfflineCheckListRS'
+  /{authtoken}/cms/terms:
+    get:
+      summary: Use this method to get  terms and conditions from backoffice
+      description: ''
+      operationId: getTerms
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetTermsRS'
+  /{authtoken}/cms/ticketchecklist:
+    get:
+      summary: Use this method to get list of tickets for an event
+      description: ''
+      operationId: getTicketCheckList
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: eventId
+          in: query
+          description: Event Id
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetTicketCheckListRS'
+  /{authtoken}/cms/updatetickets:
+    post:
+      summary: Use this method to syncronize data from offline tickets app
+      description: ''
+      operationId: updateTickets
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/GetUpdatedTicketsRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GeUpdatedTicketsRS'
+  /{authtoken}/commons/booking/{bookingid}:
+    get:
+      summary: Method to get a booking
+      description: ''
+      operationId: getBooking
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: bookingid
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetBookingRS'
+    delete:
+      summary: Method to cancel a service booking
+      description: ''
+      operationId: cancelBooking
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: bookingid
+          in: path
+          description: The service booking id you want to cancel
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CancelBookingRS'
+  /{authtoken}/commons/bookingforweb/{email}/{bookingid}:
+    get:
+      summary: Method to get a booking
+      description: ''
+      operationId: getBookingForWeb
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: email
+          in: path
+          required: true
+          type: string
+        - name: bookingid
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetBookingRS'
+  /{authtoken}/commons/bookings:
+    get:
+      summary: Method to get a list of bookings
+      description: ''
+      operationId: getBookings
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: confirmedfrom
+          in: query
+          description: Starting date you want service bookings confirmed from. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: confirmedto
+          in: query
+          description: Ending date you want service bookings confirmed to. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: startingfrom
+          in: query
+          description: Starting date you want service bookings starting from. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: startingto
+          in: query
+          description: Ending date you want service bookings starting from. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetBookingsRS'
+  /{authtoken}/commons/datasheet/{resourceid}:
+    get:
+      summary: Method to get a resource data sheet. E.g. descriptions, images, features
+      description: ''
+      operationId: getDataSheet
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: resourceid
+          in: path
+          required: true
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetDataSheetRS'
+  /{authtoken}/commons/file/{fileid}:
+    get:
+      summary: Method to get a file
+      description: ''
+      operationId: getFile
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: fileid
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetFileRS'
+    delete:
+      summary: Method to cancel a service file
+      description: ''
+      operationId: cancelFile
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: fileid
+          in: path
+          description: The service file id you want to cancel
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CancelFileRS'
+  /{authtoken}/commons/fileforweb/{email}/{fileid}:
+    get:
+      summary: Method to get a file
+      description: ''
+      operationId: getFileForWeb
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: email
+          in: path
+          required: true
+          type: string
+        - name: fileid
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetFileRS'
+  /{authtoken}/commons/files:
+    get:
+      summary: Method to get a list of files
+      description: ''
+      operationId: getFiles
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: confirmedfrom
+          in: query
+          description: Starting date you want service file confirmed from. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: confirmedto
+          in: query
+          description: Ending date you want service files confirmed to. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: startingfrom
+          in: query
+          description: Starting date you want service files starting from. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: startingto
+          in: query
+          description: Ending date you want service files starting from. In YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetFilesRS'
+  /{authtoken}/commons/fromlocator/{locatorid}:
+    get:
+      summary: get data from a Locator
+      description: ''
+      operationId: getFromLocator
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: locatorid
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetLocatorRS'
+  /{authtoken}/commons/mealplans:
+    get:
+      summary: Method to get a list of board types
+      description: ''
+      operationId: getMealPlans
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/MealPlansListRS'
+  /{authtoken}/commons/newtoken:
+    get:
+      summary: Use this method to get or renew your authentication token
+      description: ''
+      operationId: renewToken
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: user
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+  /{authtoken}/commons/portfolio:
+    get:
+      summary: Method to get the whole product tree
+      description: ''
+      operationId: getPortfolio
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetPortfolioRS'
+  /{authtoken}/commons/search:
+    get:
+      summary: Method to get the whole product tree
+      description: ''
+      operationId: searchPortfolio
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: language
+          in: query
+          description: 2 chars language iso code
+          required: false
+          type: string
+        - name: product
+          in: query
+          required: false
+          type: string
+        - name: query
+          in: query
+          description: Search text
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/SearchPortfolioRS'
+  /{authtoken}/commons/searchtransferpoints:
+    get:
+      summary: Method to get the transfer points
+      description: ''
+      operationId: searchTransferPoints
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: language
+          in: query
+          description: 2 chars language iso code
+          required: false
+          type: string
+        - name: query
+          in: query
+          description: Search text
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/SearchPortfolioRS'
+  /{authtoken}/flight/airportsbyname:
+    get:
+      summary: Get airports list
+      description: Use this method to get all available airports
+      operationId: getAirportsByName
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: text
+          in: query
+          description: The airport id to get destinations
+          required: false
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAirportsRS'
+  /{authtoken}/flight/available:
+    get:
+      summary: Get available transfers
+      description: Use this method to know which transfers are available and their prices
+      operationId: getAvailableFlights
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: origin
+          in: query
+          description: Flight origin, airport IATA code
+          required: false
+          type: string
+        - name: destination
+          in: query
+          description: Flight destination, airport IATA code
+          required: false
+          type: string
+        - name: adults
+          in: query
+          description: Number of adults
+          required: false
+          type: integer
+          format: int32
+        - name: children
+          in: query
+          description: Number of children
+          required: false
+          type: integer
+          format: int32
+        - name: infants
+          in: query
+          description: Number of infants
+          required: false
+          type: integer
+          format: int32
+        - name: departuredate
+          in: query
+          description: Locale date for the departure, in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: returndate
+          in: query
+          description: Locale date for the return, in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableFlightsRS'
+  /{authtoken}/flight/booking:
+    post:
+      summary: Confirm transfer booking
+      description: Use this method to confirm a transfer service booking
+      operationId: bookFlight
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/BookFlightRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BookFlightRS'
+  /{authtoken}/flight/destinationairports:
+    get:
+      summary: Get airports list
+      description: Use this method to get all available airports
+      operationId: getDestinationAirports
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: originAirportId
+          in: query
+          description: The airport id to get destinations
+          required: false
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAirportsRS'
+  /{authtoken}/flight/originairports:
+    get:
+      summary: Get airports list
+      description: Use this method to get all available airports
+      operationId: getOriginAirports
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: destinationAirportId
+          in: query
+          description: The airport id to get destinations
+          required: false
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAirportsRS'
+  /{authtoken}/flight/pricedetails/{departurekey}/{returnkey}:
+    get:
+      summary: Get transfer price details
+      description: Use this method to guess cancellation costs and important remarks
+      operationId: getFlightPriceDetails
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: departurekey
+          in: path
+          description: The hotel price key, as provided in the /transfer/available step
+          required: true
+          type: string
+        - name: returnkey
+          in: path
+          required: true
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: promoCode
+          in: query
+          description: Discount coupons
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetFlightPriceDetailsRS'
+  /{authtoken}/generic/available:
+    get:
+      summary: Get available generic products
+      description: you get a list of the available generic products by type
+      operationId: getAvailableGenerics
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: destination
+          in: query
+          required: false
+          type: string
+        - name: productType
+          in: query
+          required: false
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableGenericsRS'
+  /{authtoken}/generic/booking:
+    post:
+      summary: Book a Generic Product
+      description: Here you can confirm Generic booking. You must provide a price key and some additional data (lead name, comments, ...)
+      operationId: bookGeneric
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/BookGenericRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BookGenericRS'
+  /{authtoken}/generic/check/{key}:
+    get:
+      summary: Check generic availability
+      description: By passing a price key you get extra info
+      operationId: checkGeneric
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: key
+          in: path
+          description: The activity price key, as provided in the /activity/available step
+          required: true
+          type: string
+        - name: adults
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: children
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: units
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: start
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: end
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: variant
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/CheckGenericRS'
+  /{authtoken}/generic/filter:
+    get:
+      summary: Get available generic filtered
+      description: By passing a resort and holidays dates you get a list of the available generic products
+      operationId: getFilteredGeneric
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: destination
+          in: query
+          description: List of type of product to filter by separated by ,
+          required: false
+          type: string
+        - name: productType
+          in: query
+          required: false
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: labels
+          in: query
+          required: false
+          type: string
+        - name: minprice
+          in: query
+          description: Min price range to filter
+          required: false
+          type: number
+          format: double
+        - name: maxprice
+          in: query
+          description: Max price range to filter
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableGenericsRS'
+  /{authtoken}/generic/pricedetails/{key}:
+    get:
+      summary: Get generic price details
+      description: By passing a price key you get extra info
+      operationId: getGenericPriceDetails
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: key
+          in: path
+          description: The generic product price key, as provided in the /genericty/available step
+          required: true
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: supplements
+          in: query
+          required: false
+          type: string
+        - name: coupon
+          in: query
+          description: Discount coupons
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetGenericPriceDetailsRS'
+  /{authtoken}/generic/rates/{productId}:
+    get:
+      summary: Get generic rates
+      description: By passing a price key you get extra info
+      operationId: getGenericRates
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: productId
+          in: path
+          description: The activity price key, as provided in the /activity/available step
+          required: true
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetGenericRatesRS'
+  /{authtoken}/hotel/available:
+    get:
+      summary: Get available hotels
+      description: Use this method to know which hotels are available and their prices
+      operationId: getAvailableHotels
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: language
+          in: query
+          description: 2 chars language iso code
+          required: false
+          type: string
+        - name: resorts
+          in: query
+          description: The comma separated list of resorts you are interested in
+          required: false
+          type: string
+        - name: checkin
+          in: query
+          description: The locale checkin date in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: checkout
+          in: query
+          description: The locale checkout date in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: occupancies
+          in: query
+          description: 'List comma separated list of occupancies you need in <nr of rooms>x<pax>[-<age>]* format. E.g.: 2x4-10-6-2,1x2 means 2 rooms occupied by 4 pax where 3 of them are 10, 6 and 2 years old and 1 room occupied by 2 pax'
+          required: false
+          type: string
+        - name: includestaticinfo
+          in: query
+          description: Set to true if you want the response to include static info (hotel description, main hotel image, ...). If false (default value) static info will not be included in order to make the response lighter
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableHotelsRS'
+  /{authtoken}/hotel/booking:
+    post:
+      summary: Confirm hotel booking
+      description: Use this method to confirm a hotel service
+      operationId: bookHotel
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/BookHotelRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BookHotelRS'
+  /{authtoken}/hotel/filter:
+    get:
+      summary: Get available hotels filtered
+      description: Use this method to filter hotels available and their prices
+      operationId: getFilteredHotels
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: language
+          in: query
+          description: 2 chars language iso code
+          required: false
+          type: string
+        - name: resorts
+          in: query
+          description: The comma separated list of resorts you are interested in
+          required: false
+          type: string
+        - name: checkin
+          in: query
+          description: The locale checkin date in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: checkout
+          in: query
+          description: The locale checkout date in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: occupancies
+          in: query
+          description: List comma separated list of occupancies you need in <nr of rooms>x<pax>[-<age>]* format
+          required: false
+          type: string
+        - name: categories
+          in: query
+          description: List of categories selected to filter
+          required: false
+          type: string
+        - name: minprice
+          in: query
+          description: Min price range to filter
+          required: false
+          type: number
+          format: double
+        - name: maxprice
+          in: query
+          description: Max price range to filter
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableHotelsRS'
+  /{authtoken}/hotel/pricedetails:
+    post:
+      summary: Get hotel price details
+      description: Use this methos to guess cancellation costs and important remarks regarding a price
+      operationId: getHotelPriceDetails
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: 'All the info needed to retrieve '
+          required: false
+          schema:
+            $ref: '#/definitions/GetHotelPriceDetailsRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetHotelPriceDetailsRS'
+  /{authtoken}/hotel/rates:
+    post:
+      summary: Get available hotel rates
+      description: Use this method to get available room rates for a hotel
+      operationId: getRates
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: All the info needed to retrieve all available rates for a hotel and occupancies
+          required: false
+          schema:
+            $ref: '#/definitions/GetHotelRatesRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetHotelRatesRS'
+  /{authtoken}/ingestion/hotels:
+    post:
+      summary: Use this method to upload a list of hotel (and transfer) bookings
+      description: ''
+      operationId: ingestHotels
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: List of hotel requests
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/HotelRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/HotelsIngestionRS'
+  /{authtoken}/ingestion/transfers:
+    post:
+      summary: Use this method to upload a list of transfer bookings
+      description: ''
+      operationId: ingestTransfers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: List of transfers requests
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TransferRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/TransfersIngestionRS'
+  /{authtoken}/transfer/airports:
+    get:
+      summary: Get airports list
+      description: Use this method to get all available airports
+      operationId: getAirports
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAirportsRS'
+  /{authtoken}/transfer/airports/{airportId}/destinations:
+    get:
+      summary: Get destinations for airport
+      description: Use this method to get all available destinations from an airport key
+      operationId: getDestinationsForAirport
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: airportId
+          in: path
+          description: The airport key to get destinations
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetDestinationRS'
+  /{authtoken}/transfer/available:
+    get:
+      summary: Get available transfers
+      description: Use this method to know which transfers are available and their prices
+      operationId: getAvailabeTransfers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: from
+          in: query
+          description: Transfer origin, as got in the getportfolio response
+          required: false
+          type: string
+        - name: to
+          in: query
+          description: Transfer destination, as got in the getportfolio response
+          required: false
+          type: string
+        - name: pax
+          in: query
+          description: Number of pax
+          required: false
+          type: integer
+          format: int32
+        - name: bikes
+          in: query
+          description: Number of bikes
+          required: false
+          type: integer
+          format: int32
+        - name: golfs
+          in: query
+          description: Number of golf baggages
+          required: false
+          type: integer
+          format: int32
+        - name: skis
+          in: query
+          description: Number of skis
+          required: false
+          type: integer
+          format: int32
+        - name: bigs
+          in: query
+          description: Number of big luggages not bikes neither golf baggages
+          required: false
+          type: integer
+          format: int32
+        - name: wheelchairs
+          in: query
+          description: Number of wheel chairs
+          required: false
+          type: integer
+          format: int32
+        - name: incomingdate
+          in: query
+          description: Locale date for the incoming side of the transfer, in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: outgoingdate
+          in: query
+          description: Locale date for the outgoing / return side of the transfer, in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableTransfersRS'
+  /{authtoken}/transfer/booking:
+    post:
+      summary: Confirm transfer booking
+      description: Use this method to confirm a transfer service booking
+      operationId: bookTransfer
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/BookTransferRQ'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/BookTransferRS'
+  /{authtoken}/transfer/destinations:
+    get:
+      summary: Get all destinations
+      description: Use this method to get all available destinations from an airport key
+      operationId: getDestinations
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetDestinationRS'
+  /{authtoken}/transfer/filter:
+    get:
+      summary: Aget available transfers filtered
+      description: Use this method to filter transfers wich are available and their prices
+      operationId: getFilteredTransfers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: from
+          in: query
+          description: Transfer origin, as got in the getportfolio response
+          required: false
+          type: string
+        - name: to
+          in: query
+          description: Transfer destination, as got in the getportfolio response
+          required: false
+          type: string
+        - name: pax
+          in: query
+          description: Number of pax
+          required: false
+          type: integer
+          format: int32
+        - name: bikes
+          in: query
+          description: Number of bikes
+          required: false
+          type: integer
+          format: int32
+        - name: golfs
+          in: query
+          description: Number of golf baggages
+          required: false
+          type: integer
+          format: int32
+        - name: skis
+          in: query
+          description: Number of skis
+          required: false
+          type: integer
+          format: int32
+        - name: bigs
+          in: query
+          description: Number of big luggages not bikes neither golf baggages
+          required: false
+          type: integer
+          format: int32
+        - name: wheelchairs
+          in: query
+          description: Number of wheel chairs
+          required: false
+          type: integer
+          format: int32
+        - name: incomingdate
+          in: query
+          description: Locale date for the incoming side of the transfer, in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: outgoingdate
+          in: query
+          description: Locale date for the outgoing / return side of the transfer, in YYYYMMDD format
+          required: false
+          type: integer
+          format: int32
+        - name: transfertype
+          in: query
+          required: false
+          type: string
+        - name: minprice
+          in: query
+          description: Min price range to filter
+          required: false
+          type: number
+          format: double
+        - name: maxprice
+          in: query
+          description: Max price range to filter
+          required: false
+          type: number
+          format: double
+        - name: language
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetAvailableTransfersRS'
+  /{authtoken}/transfer/pricedetails/{key}:
+    get:
+      summary: Get transfer price details
+      description: Use this method to guess cancellation costs and important remarks
+      operationId: getTransferPriceDetails
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: authtoken
+          in: path
+          description: Auth token provided by your partner, and possibly renewed by using the /commons/newtoken method
+          required: true
+          type: string
+        - name: key
+          in: path
+          description: The hotel price key, as provided in the /transfer/available step
+          required: true
+          type: string
+        - name: language
+          in: query
+          required: false
+          type: string
+        - name: supplements
+          in: query
+          required: false
+          type: string
+        - name: promoCode
+          in: query
+          description: Discount coupons
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetTransferPriceDetailsRS'
+definitions:
+  GetFileRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      file:
+        description: The file
+        $ref: '#/definitions/File'
+    description: Container for the get files response
+  HotelsIngestionRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+    description: Response for the transfer ingestion request
+  GetAvailableFlightsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      currency:
+        type: string
+      departureBestPrices:
+        type: array
+        items:
+          $ref: '#/definitions/FlightBestPrice'
+      departureFlights:
+        type: array
+        items:
+          $ref: '#/definitions/AvailableFlight'
+      returnBestPrices:
+        type: array
+        items:
+          $ref: '#/definitions/FlightBestPrice'
+      returnFlights:
+        type: array
+        items:
+          $ref: '#/definitions/AvailableFlight'
+  PriceLine:
+    type: object
+    properties:
+      description:
+        type: string
+        description: Price line description
+      total:
+        type: number
+        format: double
+        description: Price line total
+    description: holder for a price detail line
+  Payments:
+    type: object
+    properties:
+      amount:
+        type: string
+      paymentMethod:
+        $ref: '#/definitions/PaymentMethod'
+      currency:
+        $ref: '#/definitions/CurrencyChange'
+  Remark:
+    type: object
+    properties:
+      type:
+        type: string
+        description: Type of remark. Possible values are IMPORTANT, NORMAL
+      text:
+        type: string
+        description: Text which should be visible for the customer
+    description: 'A remoark is some important information which '
+  ActivityAvailabilityCalendarDay:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      posInWeek:
+        type: integer
+        format: int32
+      day:
+        type: integer
+        format: int32
+      date:
+        type: string
+      styleName:
+        type: string
+      blank:
+        type: boolean
+        default: false
+    description: A calendar day
+  GetTransferPriceDetailsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      priceBreakdown:
+        type: array
+        description: Price detail, in form of lines
+        items:
+          $ref: '#/definitions/PriceLine'
+      total:
+        description: Totals and currency for all prices
+        $ref: '#/definitions/Price'
+      availableSupplements:
+        type: array
+        description: Available supplements
+        items:
+          $ref: '#/definitions/Supplement'
+      arrivalInstructions:
+        type: string
+        description: Arrival instructions
+      departureInstructions:
+        type: string
+        description: Departure instructions
+      paymentLines:
+        type: array
+        description: Detailed Payment lines
+        items:
+          $ref: '#/definitions/PaymentLine'
+      cancellationCosts:
+        type: array
+        description: Cancellation costs for this activity
+        items:
+          $ref: '#/definitions/CancellationCost'
+      remarks:
+        type: array
+        description: Remarks which should be visible for the customer
+        items:
+          $ref: '#/definitions/Remark'
+      terms:
+        type: string
+        description: Text for terms and conditions
+      mailingUnwantedText:
+        type: string
+        description: Text for rejecting or acepting mailing
+      cancellationFreeDate:
+        type: string
+        description: No cancellation costs until this date, in yyyy-MM-dd format
+    description: Holder for the transfer price details response
+  EventCheckItem:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      activityId:
+        type: string
+  GetProductionCentersListRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      productionCenters:
+        type: array
+        items:
+          $ref: '#/definitions/ProductionCenter'
+  GetLocatorRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      leadName:
+        type: string
+      email:
+        type: string
+      destination:
+        type: string
+      destinationName:
+        type: string
+      checkin:
+        type: integer
+        format: int32
+      checkout:
+        type: integer
+        format: int32
+      occupation:
+        type: string
+      pax:
+        type: integer
+        format: int32
+      origen:
+        type: string
+      origenName:
+        type: string
+  AvailableHotel:
+    type: object
+    properties:
+      hotelId:
+        type: string
+        description: The hotel id
+      hotelName:
+        type: string
+        description: The hotel name
+      hotelCategoryId:
+        type: string
+        description: The hotel category id
+      hotelCategoryName:
+        type: string
+        description: The hotel category name
+      stars:
+        type: integer
+        format: int32
+        description: The hotel number of stars
+      keys:
+        type: integer
+        format: int32
+        description: The hotel number of keys
+      longitude:
+        type: string
+        description: Google longitude
+      latitude:
+        type: string
+        description: Google latitude
+      bestDeal:
+        description: Best available rate. E.g. 153.45 EUR. NOTAVAILABLE when this hotel is not available.
+        $ref: '#/definitions/Price'
+      address:
+        type: string
+        description: The hotel address.
+      mainImage:
+        type: string
+        description: Main image from hotel.
+    description: An available hotel, including prices
+  GetInitialConfigRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      contactEmail:
+        type: string
+  BookTransferRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      bookingId:
+        type: string
+        description: The resultant booking id. You will use it to later cancel the service, if you need to
+      fileId:
+        type: string
+      availableServices:
+        type: array
+        description: Available services to upsale your booking
+        items:
+          type: string
+      paymentUrl:
+        type: string
+        description: Generated URL to pay
+    description: Container for the tranfer booking confirmation response
+  GetBookingsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      bookings:
+        type: array
+        description: The list of bookings
+        items:
+          $ref: '#/definitions/Booking'
+    description: Container for the getbookings response
+  BookTransferRQ:
+    type: object
+    properties:
+      fileId:
+        type: string
+      key:
+        type: string
+        description: The price id, as we got it when we asked for available transfer
+      bookingReference:
+        type: string
+        description: A free text reference you want to appear in the final invoice, so you can match it when validating our invoices
+      leadName:
+        type: string
+        description: The lead name
+      commentsToProvider:
+        type: string
+        description: Comments from the customer which should arrive to the activity provider
+      privateComments:
+        type: string
+        description: Your comments for us. They will not be visible to the customer neither to the activity provider
+      incomingFlightNumber:
+        type: string
+        description: Incoming flight number
+      incomingFlightTime:
+        type: integer
+        format: int32
+        description: Locale incoming flight time in YYYYMMDDHHMM format
+      incomingFlightOrigin:
+        type: string
+        description: Incoming flight origin
+      outgoingFlightNumber:
+        type: string
+        description: Outgoing flight number
+      outgoingFlightTime:
+        type: integer
+        format: int32
+        description: Locale outgoing flight time in YYYYMMDDHHMM format
+      outgoingFlightDestination:
+        type: string
+        description: Outgoing flight origin
+      contactPhone:
+        type: string
+        description: Contact telephone number
+      email:
+        type: string
+        description: User Email. Used to locate your bookings
+      bike:
+        type: integer
+        format: int32
+        description: Number of bike
+      golf:
+        type: integer
+        format: int32
+        description: Number of golf baggage
+      ski:
+        type: integer
+        format: int32
+        description: Number of ski
+      wheelchair:
+        type: integer
+        format: int32
+        description: Number of wheelchair
+      bigLuggages:
+        type: integer
+        format: int32
+        description: Number of bigLuggages
+      captchaToken:
+        type: string
+        description: Token for server validation captcha
+      language:
+        type: string
+        description: User language
+      supplements:
+        type: string
+        description: Booking extras
+      promoCode:
+        type: string
+        description: Booking promo code for discount
+      mailingUnwanted:
+        type: boolean
+        default: false
+    description: Container for the transfer service confirmation request
+  CurrencyChange:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: number
+        format: float
+  AvailableFlight:
+    type: object
+    properties:
+      economyKey:
+        type: string
+      businessKey:
+        type: string
+      origin:
+        type: string
+      destination:
+        type: string
+      company:
+        type: string
+      companyLogo:
+        type: string
+      departureDate:
+        type: string
+      departureTime:
+        type: string
+      arrivalDate:
+        type: string
+      arrivalTime:
+        type: string
+      duration:
+        type: string
+      operatedBy:
+        type: string
+      economyPrice:
+        type: number
+        format: double
+      businessPrice:
+        type: number
+        format: double
+      segments:
+        type: array
+        items:
+          $ref: '#/definitions/FlightSegment'
+  TransfersIngestionRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+    description: Response for the transfer ingestion request
+  Booking:
+    type: object
+    properties:
+      bookingId:
+        type: string
+        description: The booking id
+      created:
+        type: string
+        description: When this service was created. In ISO8651 format
+      createdBy:
+        type: string
+        description: Who created this service booking
+      modified:
+        type: string
+        description: Last modification date for this service in ISO8651 format
+      serviceType:
+        type: string
+        description: Type of service. Intended to be HOTEL, TRANSFER, ACTIVITY, ...
+      serviceDescription:
+        type: string
+        description: Description of the service
+      start:
+        type: string
+        description: When this service starts using locale. In YYYYMMDD format
+      end:
+        type: string
+        description: When this service ends using locale. In YYYYMMDD format
+      status:
+        type: string
+        description: Status for this service. E.g. OK, ONREQUEST, CANCELLED, ...
+      leadName:
+        type: string
+        description: This service lead name
+      retail:
+        type: number
+        format: double
+      net:
+        type: number
+        format: double
+      currencyIsoCode:
+        type: string
+      cancellationCost:
+        type: array
+        items:
+          $ref: '#/definitions/CancellationCost'
+      commentsToProvider:
+        type: string
+        description: Comments from the customer
+      privateComments:
+        type: string
+        description: Comments for you. Not to be shown to the customer
+  GetCircuitRatesRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      variants:
+        type: array
+        items:
+          $ref: '#/definitions/ActivityVariant'
+    description: Container for the circuit price details
+  AdditionalServiceLink:
+    type: object
+    properties:
+      type:
+        type: string
+      uri:
+        type: string
+  GetActivityPriceDetailsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      key:
+        type: string
+      supplements:
+        type: array
+        items:
+          $ref: '#/definitions/Supplement'
+      priceLines:
+        type: array
+        items:
+          $ref: '#/definitions/PriceLine'
+      total:
+        $ref: '#/definitions/Price'
+      paymentLines:
+        type: array
+        description: Detailed Payment lines
+        items:
+          $ref: '#/definitions/PaymentLine'
+      cancellationCosts:
+        type: array
+        description: Cancellation costs for this activity
+        items:
+          $ref: '#/definitions/CancellationCost'
+      cancellationFreeDate:
+        type: string
+      remarks:
+        type: array
+        description: Remarks which should be visible for the customer
+        items:
+          $ref: '#/definitions/Remark'
+      paymentMethods:
+        type: array
+        items:
+          $ref: '#/definitions/PaymentMethod'
+      terms:
+        type: string
+      mailingUnwantedText:
+        type: string
+    description: Container for the activity price details
+  GetTermsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      terms:
+        type: string
+      unmailing:
+        type: string
+  GetFlightPriceDetailsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      priceBreakdown:
+        type: array
+        description: Price detail, in form of lines
+        items:
+          $ref: '#/definitions/PriceLine'
+      total:
+        description: Totals and currency for all prices
+        $ref: '#/definitions/Price'
+      availableSupplements:
+        type: array
+        description: Available supplements
+        items:
+          $ref: '#/definitions/Supplement'
+      arrivalInstructions:
+        type: string
+        description: Arrival instructions
+      departureInstructions:
+        type: string
+        description: Departure instructions
+      paymentLines:
+        type: array
+        description: Detailed Payment lines
+        items:
+          $ref: '#/definitions/PaymentLine'
+      cancellationCosts:
+        type: array
+        description: Cancellation costs for this activity
+        items:
+          $ref: '#/definitions/CancellationCost'
+      remarks:
+        type: array
+        description: Remarks which should be visible for the customer
+        items:
+          $ref: '#/definitions/Remark'
+      terms:
+        type: string
+        description: Text for terms and conditions
+      mailingUnwantedText:
+        type: string
+        description: Text for rejecting or acepting mailing
+      cancellationFreeDate:
+        type: string
+        description: No cancellation costs until this date, in yyyy-MM-dd format
+  GetHotelAvailabilityCalendarRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      months:
+        type: array
+        description: List of available hotels, including prices
+        items:
+          $ref: '#/definitions/HotelAvailabilityCalendarMonth'
+    description: Container for the getavailability response
+  Country:
+    type: object
+    properties:
+      resourceId:
+        type: string
+        description: This country resource id
+      name:
+        type: object
+        description: This country name
+        additionalProperties:
+          type: string
+      urlFriendlyName:
+        type: string
+        description: The name in a url friendly manner
+      states:
+        type: array
+        description: List of contained states
+        items:
+          $ref: '#/definitions/State'
+    description: A country inside our portfolio. The first level in our product hierarchy
+  BookCMSRQ:
+    type: object
+    properties:
+      bookings:
+        type: array
+        items:
+          type: object
+          additionalProperties:
+            type: object
+      captchaToken:
+        type: string
+        description: Token for server validation captcha
+      language:
+        type: string
+        description: User language
+      mailingUnwanted:
+        type: boolean
+        default: false
+      travelAssuranceId:
+        type: string
+  GenericVariant:
+    type: object
+    properties:
+      key:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      bestDeal:
+        $ref: '#/definitions/Price'
+      pricePer:
+        type: string
+  CheckCircuitRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      available:
+        type: boolean
+        default: false
+      value:
+        $ref: '#/definitions/Amount'
+      key:
+        type: string
+  AvailableGeneric:
+    type: object
+    properties:
+      genericId:
+        type: string
+        description: This product ID
+      name:
+        type: string
+        description: The name of this product. Usually multi-language
+      description:
+        type: string
+        description: The description of this product. Usually multi-language
+      image:
+        type: string
+        description: The main image for this product
+      type:
+        type: string
+        description: The type of product
+      bestDeal:
+        $ref: '#/definitions/Price'
+      labels:
+        type: array
+        items:
+          $ref: '#/definitions/Label'
+    description: An available Generic product
+  CheckGenericRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      available:
+        type: boolean
+        default: false
+      value:
+        $ref: '#/definitions/Amount'
+      key:
+        type: string
+  CancellationCost:
+    type: object
+    properties:
+      retail:
+        type: number
+        format: double
+      net:
+        type: number
+        format: double
+      gmttime:
+        type: string
+  AvailableCircuit:
+    type: object
+    properties:
+      circuitId:
+        type: string
+        description: This circuit ID
+      name:
+        type: string
+        description: The name of this circuit. Usually multi-language
+      description:
+        type: string
+        description: The description of this circuit. Usually multi-language
+      image:
+        type: string
+        description: The main image for this circuit
+      bestDeal:
+        $ref: '#/definitions/Price'
+      labels:
+        type: array
+        items:
+          $ref: '#/definitions/Label'
+    description: An available circuit
+  BookCMSRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      bookingId:
+        type: string
+        description: The resultant booking id. You will use it to later cancel the service, if you need to
+      availableServices:
+        type: array
+        description: Available services to upsale your booking
+        items:
+          type: string
+      paymentUrl:
+        type: string
+        description: Generated URL to pay
+    description: Response for the shopping cart booking confirmation
+  UpdateRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+    description: Container for the update method response
+  ConfirmServicesRQ:
+    type: object
+    properties:
+      serviceConfirmations:
+        type: array
+        description: List of service confirmations (or rejections)
+        items:
+          $ref: '#/definitions/ServiceConfirmation'
+    description: Container for the confirm services request
+  UpdateRQ:
+    type: object
+    properties:
+      operations:
+        type: array
+        description: List of operations you want to perform on hote inventories
+        items:
+          $ref: '#/definitions/UpdateOperation'
+    description: Container for the update request parameters
+  ConfirmServicesRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+    description: Container for the service confirmation response
+  OptionBoardPrice:
+    type: object
+    properties:
+      boardBasisId:
+        type: string
+        description: Board basis id
+      boardBasisName:
+        type: string
+        description: Board basis name
+      retailPrice:
+        type: number
+        format: double
+        description: Retail price
+      netPrice:
+        type: number
+        format: double
+        description: Net price
+      offer:
+        type: boolean
+        description: A flag to state that this price is an offer
+        default: false
+      offerText:
+        type: string
+        description: The offer description, if this is an offer price
+      onRequest:
+        type: boolean
+        description: A flag to state that this price is only available on request
+        default: false
+      onRequestText:
+        type: string
+        description: Describes why this price is on request
+      nonRefundable:
+        type: boolean
+        description: A flag to state that this price is not refundable. No cancellation is allowed
+        default: false
+      rateId:
+        type: string
+        description: Rate id
+    description: An availabe board basis and its price
+  RoomId:
+    type: object
+    properties:
+      id:
+        type: string
+        description: This room id
+      description:
+        type: string
+        description: This room description
+    description: Room data to be used by the channel manager
+  GetFilesRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      files:
+        type: array
+        description: The list of files
+        items:
+          $ref: '#/definitions/File'
+    description: Container for the get files response
+  CheckTicketRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      ticket:
+        $ref: '#/definitions/TicketCheckItem'
+      validationMessage:
+        type: string
+      valid:
+        type: boolean
+        default: false
+  ActivityVariant:
+    type: object
+    properties:
+      key:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      bestDeal:
+        $ref: '#/definitions/Price'
+      pricePer:
+        type: string
+  GetDestinationRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      destination:
+        type: array
+        description: List of destination.
+        items:
+          $ref: '#/definitions/Resource'
+  FlightSegment:
+    type: object
+    properties:
+      originId:
+        type: string
+      originDescription:
+        type: string
+      destinationId:
+        type: string
+      destinationDescription:
+        type: string
+      company:
+        type: string
+      companyLogo:
+        type: string
+      flightNumber:
+        type: string
+      airplane:
+        type: string
+      departureDate:
+        type: string
+      departureTime:
+        type: string
+      arrivalDate:
+        type: string
+      arrivalTime:
+        type: string
+      duration:
+        type: string
+  GetLoginRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      authUser:
+        type: string
+      message:
+        type: string
+      logged:
+        type: boolean
+        default: false
+  GetLoginRQ:
+    type: object
+    properties:
+      user:
+        type: string
+      password:
+        type: string
+  TransferRQ:
+    type: object
+    properties:
+      agencyId:
+        type: string
+      agencyReference:
+        type: string
+      currency:
+        type: string
+      value:
+        type: number
+        format: double
+      serviceType:
+        type: string
+      vehicle:
+        type: string
+      passengerName:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+      adults:
+        type: integer
+        format: int32
+      children:
+        type: integer
+        format: int32
+      babies:
+        type: integer
+        format: int32
+      extras:
+        type: integer
+        format: int32
+      comments:
+        type: string
+      arrivalStatus:
+        type: string
+      arrivalAirport:
+        type: string
+      arrivalZone:
+        type: string
+      arrivalAddress:
+        type: string
+      arrivalFlightDate:
+        type: string
+      arrivalFlightTime:
+        type: string
+      arrivalFlightNumber:
+        type: string
+      arrivalFlightCompany:
+        type: string
+      arrivalOriginAirport:
+        type: string
+      arrivalComments:
+        type: string
+      arrivalPickupDate:
+        type: string
+      arrivalPickupTime:
+        type: string
+      departureStatus:
+        type: string
+      departureAirport:
+        type: string
+      departureZone:
+        type: string
+      departureAddress:
+        type: string
+      departureFlightDate:
+        type: string
+      departureFlightTime:
+        type: string
+      departureFlightNumber:
+        type: string
+      departureFlightCompany:
+        type: string
+      departureDestinationAirport:
+        type: string
+      departureComments:
+        type: string
+      departurePickupDate:
+        type: string
+      departurePickupTime:
+        type: string
+    description: Transfer request
+  GetUpdatedTicketsRQ:
+    type: object
+    properties:
+      userId:
+        type: string
+      tickets:
+        type: array
+        items:
+          $ref: '#/definitions/TicketCheckItem'
+  GetAvailableCircuitsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      labels:
+        type: array
+        items:
+          $ref: '#/definitions/Label'
+      minPrice:
+        type: number
+        format: double
+      maxPrice:
+        type: number
+        format: double
+      availableCircuits:
+        type: array
+        description: List of the available circuits for that resort and dates
+        items:
+          $ref: '#/definitions/AvailableCircuit'
+    description: Response with the list of available circuit
+  HotelBooking:
+    type: object
+    properties:
+      bookingId:
+        type: string
+        description: The booking id
+      created:
+        type: string
+        description: When this service was created. In ISO8651 format
+      createdBy:
+        type: string
+        description: Who created this service booking
+      modified:
+        type: string
+        description: Last modification date for this service in ISO8651 format
+      serviceType:
+        type: string
+        description: Type of service. Intended to be HOTEL, TRANSFER, ACTIVITY, ...
+      serviceDescription:
+        type: string
+        description: Description of the service
+      start:
+        type: string
+        description: When this service starts using locale. In YYYYMMDD format
+      end:
+        type: string
+        description: When this service ends using locale. In YYYYMMDD format
+      status:
+        type: string
+        description: Status for this service. E.g. OK, ONREQUEST, CANCELLED, ...
+      leadName:
+        type: string
+        description: This service lead name
+      retailValue:
+        $ref: '#/definitions/Amount'
+      netValue:
+        $ref: '#/definitions/Amount'
+      commentsToProvider:
+        type: string
+        description: Comments from the customer
+      privateComments:
+        type: string
+        description: Comments for you. Not to be shown to the customer
+      stays:
+        type: array
+        description: List of stays (rooms, occupation and boards)
+        items:
+          $ref: '#/definitions/HotelStay'
+    description: A booking service
+  Stay:
+    type: object
+    properties:
+      occupancy:
+        type: string
+        description: 'Occupancy you need in <nr of rooms>x<pax>[-<age>]* format. E.g.: 2x4-10-6-2 2 rooms occupied by 4 pax where 3 of them are 10, 6 and 2 years old'
+      roomId:
+        type: string
+        description: Desired room id
+      boardId:
+        type: string
+        description: Desired board id
+      rateId:
+        type: string
+        description: Desired rate id
+      supplements:
+        type: string
+        description: Semicolon separated list of desired supplements in format id#qty;id#qty;id#qty
+      pax:
+        type: array
+        description: Passengers info. Applies only when confirming
+        items:
+          $ref: '#/definitions/PaxDetails'
+    description: One instance for each occupancy (number of rooms - pax - ages)
+  Cart:
+    type: object
+    properties:
+      precio:
+        type: string
+      img:
+        type: string
+      qty:
+        type: string
+      id:
+        type: string
+      nombre:
+        type: string
+      nombreHtml:
+        type: string
+      qrCode:
+        type: string
+      groupReference:
+        type: string
+  GetAvailableActivitiesRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      labels:
+        type: array
+        items:
+          $ref: '#/definitions/Label'
+      minPrice:
+        type: number
+        format: double
+      maxPrice:
+        type: number
+        format: double
+      availableActivities:
+        type: array
+        description: List of the available activities for that resort and dates
+        items:
+          $ref: '#/definitions/AvailableActivity'
+    description: Response with the list of available activities
+  AvailableActivity:
+    type: object
+    properties:
+      activityId:
+        type: string
+        description: This activity ID
+      name:
+        type: string
+        description: The name of this activity. Usually multi-language
+      description:
+        type: string
+        description: The description of this activity. Usually multi-language
+      image:
+        type: string
+        description: The main image for this activity
+      bestDeal:
+        $ref: '#/definitions/Price'
+      labels:
+        type: array
+        items:
+          $ref: '#/definitions/Label'
+    description: An available activity
+  ServiceConfirmation:
+    type: object
+    properties:
+      bookingId:
+        type: string
+        description: Service booking id, as provided by the getroominglist method
+      confirmed:
+        type: boolean
+        description: True if this service is OK. False if this service is not accepted
+        default: false
+      comments:
+        type: string
+        description: Comments you want to supply. E.g. the reason to reject the service request
+    description: Service confirmation data
+  Amount:
+    type: object
+    properties:
+      currencyIsoCode:
+        type: string
+        description: The currency ISO code
+      value:
+        type: number
+        format: double
+        description: The amount value, expressed in this currency
+    description: A currency - value pair
+  CancelFileRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+  GetGenericPriceDetailsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      key:
+        type: string
+      supplements:
+        type: array
+        items:
+          $ref: '#/definitions/Supplement'
+      priceLines:
+        type: array
+        items:
+          $ref: '#/definitions/PriceLine'
+      total:
+        $ref: '#/definitions/Price'
+      paymentLines:
+        type: array
+        description: Detailed Payment lines
+        items:
+          $ref: '#/definitions/PaymentLine'
+      cancellationCosts:
+        type: array
+        description: Cancellation costs for this activity
+        items:
+          $ref: '#/definitions/CancellationCost'
+      remarks:
+        type: array
+        description: Remarks which should be visible for the customer
+        items:
+          $ref: '#/definitions/Remark'
+      couponMsg:
+        type: string
+        description: Response message from discount coupon applicated
+      paymentMethods:
+        type: array
+        items:
+          $ref: '#/definitions/PaymentMethod'
+      terms:
+        type: string
+      mailingUnwantedText:
+        type: string
+      cancellationFreeDate:
+        type: string
+  CartCompletionRQ:
+    type: object
+    properties:
+      bookings:
+        type: array
+        items:
+          type: object
+          additionalProperties:
+            type: object
+      captchaToken:
+        type: string
+        description: Token for server validation captcha
+      language:
+        type: string
+        description: User language
+      mailingUnwanted:
+        type: boolean
+        default: false
+      travelAssuranceId:
+        type: string
+      geoLoc:
+        type: string
+  Personaldata:
+    type: object
+    properties:
+      hotel:
+        type: string
+      telefono:
+        type: string
+      titular:
+        type: string
+      email:
+        type: string
+      habitacion:
+        type: string
+      comments:
+        type: string
+  ActivityAvailabilityCalendarWeek:
+    type: object
+    properties:
+      days:
+        type: array
+        items:
+          $ref: '#/definitions/ActivityAvailabilityCalendarDay'
+    description: A calendar week
+  PlainActivityItem:
+    type: object
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      htmlDescription:
+        type: string
+      activityId:
+        type: string
+      retailPrice:
+        $ref: '#/definitions/Amount'
+      groupReference:
+        type: string
+      groupDescription:
+        type: string
+  CartCompletionRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      additionalServicesLinks:
+        type: array
+        items:
+          $ref: '#/definitions/AdditionalServiceLink'
+      travelInsurance:
+        $ref: '#/definitions/TravelInsuranceData'
+  HotelRQ:
+    type: object
+    properties:
+      agencyId:
+        type: string
+      agencyReference:
+        type: string
+      additional:
+        type: boolean
+        default: false
+      currency:
+        type: string
+      value:
+        type: number
+        format: double
+      passengerName:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+      adults:
+        type: integer
+        format: int32
+      children:
+        type: integer
+        format: int32
+      babies:
+        type: integer
+        format: int32
+      extras:
+        type: integer
+        format: int32
+      ages:
+        type: string
+      comments:
+        type: string
+      hotel:
+        type: string
+      hotelCountry:
+        type: string
+      hotelDestination:
+        type: string
+      hotelZone:
+        type: string
+      hotelName:
+        type: string
+      hotelAddress:
+        type: string
+      numberOfRooms:
+        type: integer
+        format: int32
+      room:
+        type: string
+      board:
+        type: string
+      serviceType:
+        type: string
+      vehicle:
+        type: string
+      arrivalStatus:
+        type: string
+      arrivalAirport:
+        type: string
+      arrivalFlightDate:
+        type: string
+      arrivalFlightTime:
+        type: string
+      arrivalFlightNumber:
+        type: string
+      arrivalFlightCompany:
+        type: string
+      arrivalOriginAirport:
+        type: string
+      arrivalComments:
+        type: string
+      arrivalPickupDate:
+        type: string
+      arrivalPickupTime:
+        type: string
+      departureStatus:
+        type: string
+      departureAirport:
+        type: string
+      departureFlightDate:
+        type: string
+      departureFlightTime:
+        type: string
+      departureFlightNumber:
+        type: string
+      departureFlightCompany:
+        type: string
+      departureDestinationAirport:
+        type: string
+      departureComments:
+        type: string
+      departurePickupDate:
+        type: string
+      departurePickupTime:
+        type: string
+    description: Hotel request
+  PaymentLine:
+    type: object
+    properties:
+      paymentMethod:
+        type: string
+      date:
+        type: string
+      amount:
+        $ref: '#/definitions/Amount'
+  ActivityAvailabilityCalendarMonth:
+    type: object
+    properties:
+      title:
+        type: string
+      year:
+        type: integer
+        format: int32
+      month:
+        type: integer
+        format: int32
+      weeks:
+        type: array
+        items:
+          $ref: '#/definitions/ActivityAvailabilityCalendarWeek'
+    description: A calendar month
+  GetTicketCheckListRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      ticket:
+        description: List of available events in an excursions, to check
+        $ref: '#/definitions/TicketListItem'
+  BookGenericRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      bookingId:
+        type: string
+        description: The resultant booking id. You will use it to later cancel the service, if you need to
+      fileId:
+        type: string
+      availableServices:
+        type: array
+        description: Available services to upsale your booking
+        items:
+          type: string
+      paymentUrl:
+        type: string
+        description: Generated URL to pay
+  BookGenericRQ:
+    type: object
+    properties:
+      fileId:
+        type: string
+      key:
+        type: string
+      supplementIds:
+        type: string
+      bookingReference:
+        type: string
+        description: A free text reference you want to appear in the final invoice, so you can match it when validating our invoices
+      leadName:
+        type: string
+        description: The lead name
+      commentsToProvider:
+        type: string
+        description: Comments from the customer which should arrive to the activity provider
+      phoneNumber:
+        type: string
+        description: Your phone number to contact with you
+      email:
+        type: string
+        description: User Email. Used to locate your bookings
+      captchaToken:
+        type: string
+        description: Token for server validation captcha
+      language:
+        type: string
+        description: User language
+      supplements:
+        type: string
+        description: Booking extras
+      coupon:
+        type: string
+        description: Booking coupon discount
+      mailingUnwanted:
+        type: boolean
+        default: false
+    description: Parameters needed to confirm an generic product booking
+  ActivityCheckItem:
+    type: object
+    properties:
+      activityId:
+        type: string
+        description: This activity ID
+      name:
+        type: string
+        description: 'The name of this activity. '
+      description:
+        type: string
+        description: 'The description of this activity. '
+      image:
+        type: string
+        description: The main image for this activity
+      date:
+        type: integer
+        format: int32
+        description: Date for this activity
+  TravelInsuranceData:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      icon:
+        type: string
+      value:
+        type: number
+        format: double
+      currency:
+        type: string
+      totalIfIncluded:
+        type: number
+        format: double
+  FlightBestPrice:
+    type: object
+    properties:
+      formattedDate:
+        type: string
+      date:
+        type: string
+      price:
+        type: number
+        format: double
+      current:
+        type: boolean
+        default: false
+  AvailableTransfer:
+    type: object
+    properties:
+      key:
+        type: string
+        description: Identifier for this transfer price. You will use it in next steps
+      type:
+        type: string
+        description: Type of transfer. E.G. SHUTTLE, PRIVATE
+      vehicle:
+        type: string
+        description: Vehicle
+      description:
+        type: string
+        description: Description of the service
+      image:
+        type: string
+        description: Main image from transfer.
+      total:
+        $ref: '#/definitions/Price'
+      offer:
+        type: boolean
+        description: A flag to state that this price is an offer
+        default: false
+      offerText:
+        type: string
+        description: The offer description, if this is an offer price
+      onRequest:
+        type: boolean
+        description: A flag to state that this price is only available on request
+        default: false
+      onRequestText:
+        type: string
+        description: Describes why this price is on request
+      nonRefundable:
+        type: boolean
+        description: A flag to state that this price is not refundable. No cancellation is allowed
+        default: false
+    description: An available transfer
+  MealPlan:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The meal plan id
+      name:
+        type: string
+        description: The meal plan name
+  PricedStay:
+    type: object
+    properties:
+      occupancy:
+        type: string
+        description: 'Occupancy you need in <nr of rooms>x<pax>[-<age>]* format. E.g.: 2x4-10-6-2 2 rooms occupied by 4 pax where 3 of them are 10, 6 and 2 years old'
+      roomId:
+        type: string
+        description: Desired room id
+      roomName:
+        type: string
+        description: Desired room name
+      boardId:
+        type: string
+        description: Desired board id
+      boardName:
+        type: string
+        description: Desired board name
+      rateId:
+        type: string
+        description: Desired rate id
+      supplements:
+        type: string
+        description: Semicolon separated list of desired supplements in format id#qty;id#qty;id#qty
+      pax:
+        type: array
+        description: Passengers info. Applies only when confirming
+        items:
+          $ref: '#/definitions/PaxDetails'
+      retailPrice:
+        type: number
+        format: double
+        description: Retail price
+      netPrice:
+        type: number
+        format: double
+        description: Net price
+      offer:
+        type: boolean
+        description: A flag to state that this price is an offer
+        default: false
+      offerText:
+        type: string
+        description: The offer description, if this is an offer price
+      onRequest:
+        type: boolean
+        description: A flag to state that this price is only available on request
+        default: false
+      onRequestText:
+        type: string
+        description: Describes why this price is on request
+      nonRefundable:
+        type: boolean
+        description: A flag to state that this price is not refundable. No cancellation is allowed
+        default: false
+      availableSupplements:
+        type: array
+        description: List of available optional supplements
+        items:
+          $ref: '#/definitions/Supplement'
+    description: One instance for each occupancy (number of rooms - pax - ages)
+  Label:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  GetAvailableGenericsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      labels:
+        type: array
+        items:
+          $ref: '#/definitions/Label'
+      minPrice:
+        type: number
+        format: double
+      maxPrice:
+        type: number
+        format: double
+      availableGenerics:
+        type: array
+        description: List of the available products
+        items:
+          $ref: '#/definitions/AvailableGeneric'
+    description: Response with the list of available products
+  HotelAvailabilityCalendarMonth:
+    type: object
+    properties:
+      title:
+        type: string
+      year:
+        type: integer
+        format: int32
+      month:
+        type: integer
+        format: int32
+      weeks:
+        type: array
+        items:
+          $ref: '#/definitions/HotelAvailabilityCalendarWeek'
+    description: A calendar month
+  GetCircuitPriceDetailsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      key:
+        type: string
+      supplements:
+        type: array
+        items:
+          $ref: '#/definitions/Supplement'
+      priceLines:
+        type: array
+        items:
+          $ref: '#/definitions/PriceLine'
+      total:
+        $ref: '#/definitions/Price'
+      paymentLines:
+        type: array
+        description: Detailed Payment lines
+        items:
+          $ref: '#/definitions/PaymentLine'
+      cancellationCosts:
+        type: array
+        description: Cancellation costs for this circuit
+        items:
+          $ref: '#/definitions/CancellationCost'
+      remarks:
+        type: array
+        description: Remarks which should be visible for the customer
+        items:
+          $ref: '#/definitions/Remark'
+      paymentMethods:
+        type: array
+        items:
+          $ref: '#/definitions/PaymentMethod'
+      terms:
+        type: string
+      mailingUnwantedText:
+        type: string
+      cancellationFreeDate:
+        type: string
+    description: Container for the circuit price details
+  GetGenericRatesRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      dateDependant:
+        type: boolean
+        default: false
+      datesRangeDependant:
+        type: boolean
+        default: false
+      unitsDependant:
+        type: boolean
+        default: false
+      adultsDependant:
+        type: boolean
+        default: false
+      childrenDependant:
+        type: boolean
+        default: false
+      variantDependant:
+        type: boolean
+        default: false
+      variants:
+        type: array
+        items:
+          $ref: '#/definitions/GenericVariant'
+    description: Container for the activity price details
+  GetOfflineCheckListRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      activity:
+        type: array
+        description: List of available excursions, to check
+        items:
+          $ref: '#/definitions/ActivityCheckItem'
+      event:
+        type: array
+        description: List of available events in an excursions, to check
+        items:
+          $ref: '#/definitions/EventCheckItem'
+      ticketList:
+        type: array
+        description: List of available events in an excursions, to check
+        items:
+          $ref: '#/definitions/TicketListItem'
+  GetActivityAvailabilityCalendarRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      months:
+        type: array
+        description: List of available hotels, including prices
+        items:
+          $ref: '#/definitions/ActivityAvailabilityCalendarMonth'
+    description: Container for the getavailability response
+  Resource:
+    type: object
+    properties:
+      resourceId:
+        type: string
+        description: This resouce id
+      name:
+        type: object
+        description: This resource name
+        additionalProperties:
+          type: string
+      type:
+        type: string
+        description: Type of resource. E.g. HOTEL, ACTIVITY, TICKET, CARRENTALOFFICE, ...
+      longitude:
+        type: string
+        description: Resource longitude accorging to google maps
+      latitude:
+        type: string
+        description: Resource latitude accorging to google maps
+      description:
+        type: object
+        description: Resource description
+        additionalProperties:
+          type: string
+    description: A resource inside our portfolio. E.g. a hotel, an activity, a car rental office, ...
+  HotelStay:
+    type: object
+    properties:
+      start:
+        type: integer
+        format: int32
+        description: When this stay starts in locale. In YYYYMMDD format
+      end:
+        type: integer
+        format: int32
+        description: When this stay ends in locale. In YYYYMMDD format
+      roomId:
+        type: string
+        description: The room id
+      roomName:
+        type: string
+        description: The room name
+      boardBasisId:
+        type: string
+        description: The board basis id
+      boardBasisName:
+        type: string
+        description: The board basis name
+      numberOfRooms:
+        type: integer
+        format: int32
+        description: The number of rooms for this line
+      paxPerRoom:
+        type: integer
+        format: int32
+        description: How many pax will stay per room for this line
+      ages:
+        type: array
+        description: Ages for the pax. If ommited pax will be assumed to be an adult
+        items:
+          type: integer
+          format: int32
+    description: A stay line inside a hotel booking service
+  City:
+    type: object
+    properties:
+      resourceId:
+        type: string
+        description: This city resource id
+      name:
+        type: object
+        description: This city name
+        additionalProperties:
+          type: string
+      urlFriendlyName:
+        type: string
+        description: The name in a url friendly manner
+      resources:
+        type: array
+        description: List of resources available inside this city. E.g. hotels, activities, car rental offices, ...
+        items:
+          $ref: '#/definitions/Resource'
+    description: A city inside our portfolio. This is the third and last level in our product hierarchy
+  CompanyData:
+    type: object
+    properties:
+      name:
+        type: string
+      legalText:
+        type: string
+      contactPhone:
+        type: string
+      contactEmail:
+        type: string
+  GetAirportsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      airports:
+        type: array
+        description: List of Airports.
+        items:
+          $ref: '#/definitions/Resource'
+    description: Container for the Airports response
+  HotelAvailabilityCalendarWeek:
+    type: object
+    properties:
+      days:
+        type: array
+        items:
+          $ref: '#/definitions/HotelAvailabilityCalendarDay'
+    description: A calendar week
+  Price:
+    type: object
+    properties:
+      currencyIsoCode:
+        type: string
+        description: Currency iso code for all prices
+      retail:
+        type: number
+        format: double
+        description: Retail price
+      net:
+        type: number
+        format: double
+        description: Net price
+      offer:
+        type: boolean
+        description: True if this an offer price
+        default: false
+      offerText:
+        type: string
+        description: Offer title, if available
+      beforeOffer:
+        type: number
+        format: double
+        description: Price before offer. Applies to retail price if present
+    description: Holder for price
+  State:
+    type: object
+    properties:
+      resourceId:
+        type: string
+        description: This state resource id
+      name:
+        type: object
+        description: This state name
+        additionalProperties:
+          type: string
+      urlFriendlyName:
+        type: string
+        description: The name in a url friendly manner
+      cities:
+        type: array
+        description: List of cities included in this state
+        items:
+          $ref: '#/definitions/City'
+    description: An state inside our portfolio. This is the second level in our product hierarchy
+  GetHotelPriceDetailsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      status:
+        type: string
+        description: Status. Possible values are OK and ON REQUEST
+      total:
+        description: Total price
+        $ref: '#/definitions/Price'
+      stays:
+        type: array
+        description: List of stays (occupancies with desired room and board)
+        items:
+          $ref: '#/definitions/PricedStay'
+      priceBreakdown:
+        type: array
+        description: Price detail, in form of lines
+        items:
+          $ref: '#/definitions/PriceLine'
+      cancellationCosts:
+        type: array
+        description: Cancellation costs
+        items:
+          $ref: '#/definitions/CancellationCost'
+      cancellationFreeDate:
+        type: string
+        description: No cancellation cost until this date, yyyy-MM-dd formatted
+      remarks:
+        type: array
+        description: Remarks which should be visible for the customer
+        items:
+          $ref: '#/definitions/Remark'
+      paymentLines:
+        type: array
+        description: Detailed Payment lines
+        items:
+          $ref: '#/definitions/PaymentLine'
+      promoCodeMsg:
+        type: string
+        description: Promo code application result
+      terms:
+        type: string
+        description: Terms and conditions text. For website usage only
+      mailingUnwantedText:
+        type: string
+        description: Mailing unwanted text. For website usage only
+    description: Container for the hotel price details response
+  Airport:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      country:
+        type: string
+  GetDataSheetRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      values:
+        type: array
+        description: List of data associated with this resource, in a flatten manner
+        items:
+          $ref: '#/definitions/Pair'
+    description: Container for the getdatasheet response
+  GetBookingRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      booking:
+        description: The booking
+        $ref: '#/definitions/Booking'
+    description: Container for the getbookings response
+  GetPlainListRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      activity:
+        type: array
+        description: List of available excursions, to check
+        items:
+          $ref: '#/definitions/ActivityCheckItem'
+      plainActivities:
+        type: array
+        items:
+          $ref: '#/definitions/PlainActivityItem'
+      paymentMethods:
+        type: array
+        items:
+          $ref: '#/definitions/PaymentMethod'
+      currencies:
+        type: array
+        items:
+          $ref: '#/definitions/CurrencyChange'
+      companyData:
+        $ref: '#/definitions/CompanyData'
+  Supplement:
+    type: object
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      price:
+        type: number
+        format: double
+  CancelBookingRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+  GetHotelPriceDetailsRQ:
+    type: object
+    properties:
+      language:
+        type: string
+        description: 2 char language iso code
+      hotelId:
+        type: string
+        description: hotel id, as retrieved from hote available hotels response
+      checkin:
+        type: integer
+        format: int32
+        description: The locale checkin date in YYYYMMDD format
+      checkout:
+        type: integer
+        format: int32
+        description: The locale checkout date in YYYYMMDD format
+      stays:
+        type: array
+        description: List of stays (occupancies with desired room and board)
+        items:
+          $ref: '#/definitions/Stay'
+      promoCode:
+        type: string
+        description: Promo code
+    description: Rq to get hotel price details
+  PaymentMethod:
+    type: object
+    properties:
+      key:
+        type: string
+      name:
+        type: string
+      currencyIsoCode:
+        type: string
+  Option:
+    type: object
+    properties:
+      roomId:
+        type: string
+        description: This room type id
+      roomName:
+        type: string
+        description: This room type name
+      roomDescription:
+        type: string
+        description: This room description
+      image:
+        type: string
+        description: This room main image
+      prices:
+        type: array
+        description: List of available board basis and prices for each board
+        items:
+          $ref: '#/definitions/OptionBoardPrice'
+      allotment:
+        type: integer
+        format: int32
+        description: Number of available rooms. Check if you plan to use the same room several times
+    description: An available room and board combination the fits your occupancy
+  ActivityLanguage:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  GetAvailableHotelsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      hotels:
+        type: array
+        description: List of available hotels, including prices
+        items:
+          $ref: '#/definitions/AvailableHotel'
+      labels:
+        type: array
+        description: List of labels found in all the available hotels
+        items:
+          $ref: '#/definitions/Label'
+      minPrice:
+        type: number
+        format: double
+        description: Min price found
+      maxPrice:
+        type: number
+        format: double
+        description: Max price found
+    description: Container for the getavailability response
+  ActivityShift:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      languages:
+        type: array
+        items:
+          $ref: '#/definitions/ActivityLanguage'
+      pickups:
+        type: array
+        items:
+          $ref: '#/definitions/ActivityPickupPoint'
+  File:
+    type: object
+    properties:
+      fileId:
+        type: string
+        description: The File id
+      bookings:
+        type: array
+        description: File´s bookings list
+        items:
+          $ref: '#/definitions/Booking'
+      totalPrice:
+        description: The booking id
+        $ref: '#/definitions/Amount'
+      leadName:
+        type: string
+        description: This service lead name
+      email:
+        type: string
+        description: This service lead email
+      created:
+        type: string
+        description: When this service was created. In ISO8651 format
+      createdBy:
+        type: string
+        description: Who created this service booking
+      modified:
+        type: string
+        description: Last modification date for this service in ISO8651 format
+  GetPortfolioRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      countries:
+        type: array
+        description: List of countries. This is the first level in the portfolio hierarchy
+        items:
+          $ref: '#/definitions/Country'
+    description: Container for the getportfolio response
+  GetActivityCheckListRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      activity:
+        type: array
+        description: List of available excursions, to check
+        items:
+          $ref: '#/definitions/ActivityCheckItem'
+  CartList:
+    type: object
+    properties:
+      fileId:
+        type: string
+      agencyReference:
+        type: string
+      productionCenterId:
+        type: string
+      date:
+        type: string
+      personaldata:
+        $ref: '#/definitions/Personaldata'
+      total:
+        type: string
+      payments:
+        type: array
+        items:
+          $ref: '#/definitions/Payments'
+      cart:
+        type: array
+        items:
+          $ref: '#/definitions/Cart'
+      status:
+        type: string
+  GetRoomingListRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      bookings:
+        type: array
+        description: List of hotel bookings
+        items:
+          $ref: '#/definitions/HotelBooking'
+    description: Container for the getroominglist response
+  PaxDetails:
+    type: object
+    properties:
+      firstName:
+        type: string
+        description: Passenger first name
+      surname:
+        type: string
+        description: Passenger surname
+      age:
+        type: integer
+        format: int32
+        description: Passenger age
+      birthDate:
+        type: integer
+        format: int32
+        description: Passenger birth date
+      type:
+        type: string
+        description: 'Passenger type. Possible values are: AD for adult and CH for child'
+      documentType:
+        type: string
+        description: 'Document type. Possible values are: DNI for DNI and PASS for passport'
+      documentId:
+        type: string
+        description: Passenger document id
+      groupId:
+        type: string
+        description: 'E.g.: room number, vehicle, .... For presentation purposes only'
+  GeUpdatedTicketsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+  ProductionCenter:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      hotelName:
+        type: string
+  ActivityPickupPoint:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  GetPassengerDetailsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      found:
+        type: boolean
+        default: false
+      agency:
+        type: string
+      fileId:
+        type: string
+      leadName:
+        type: string
+      comments:
+        type: string
+      prodCenterId:
+        type: string
+      hotelName:
+        type: string
+      roomNumber:
+        type: string
+      telephone:
+        type: string
+      email:
+        type: string
+  TicketListItem:
+    type: object
+    properties:
+      ticket:
+        type: array
+        description: List of available events in an excursions, to check
+        items:
+          $ref: '#/definitions/TicketCheckItem'
+      totalTickets:
+        type: integer
+        format: int32
+      checkedTickets:
+        type: integer
+        format: int32
+      remainingTickets:
+        type: integer
+        format: int32
+      totalPax:
+        type: integer
+        format: int32
+      checkedPax:
+        type: integer
+        format: int32
+      remainingPax:
+        type: integer
+        format: int32
+      eventId:
+        type: string
+  Match:
+    type: object
+    properties:
+      resourceId:
+        type: string
+        description: Id to use in the availability search
+      name:
+        type: string
+        description: Name for this resource
+      description:
+        type: string
+        description: Description for this resource
+      metadata:
+        type: object
+        description: Metadata for this resource
+        additionalProperties:
+          type: string
+    description: Container for a portfolio match
+  MealPlansListRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      mealPlans:
+        type: array
+        description: The list of board basis
+        items:
+          $ref: '#/definitions/MealPlan'
+    description: Container for the getboards response
+  Allocation:
+    type: object
+    properties:
+      numberOfRooms:
+        type: integer
+        format: int32
+        description: Number of rooms
+      paxPerRoom:
+        type: integer
+        format: int32
+        description: Pax per room
+      ages:
+        type: array
+        description: Ages. If not present we will assume the pax is an adult
+        items:
+          type: integer
+          format: int32
+      options:
+        type: array
+        description: List of available rooms and board basis with prices and available optional supplements
+        items:
+          $ref: '#/definitions/Option'
+    description: Matches one of your requested occupancies
+  UpdateBookingRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+  GetEventCheckListRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      event:
+        type: array
+        description: List of available events in an excursions, to check
+        items:
+          $ref: '#/definitions/EventCheckItem'
+  SearchPortfolioRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      matches:
+        type: array
+        description: List of matches
+        items:
+          $ref: '#/definitions/Match'
+    description: Container for the searchportfolio response
+  BookCircuitRQ:
+    type: object
+    properties:
+      fileId:
+        type: string
+      key:
+        type: string
+      date:
+        type: integer
+        format: int32
+      language:
+        type: string
+      shiftId:
+        type: string
+      variantId:
+        type: string
+      adults:
+        type: integer
+        format: int32
+      children:
+        type: integer
+        format: int32
+      infants:
+        type: integer
+        format: int32
+      mailingUnwanted:
+        type: boolean
+        default: false
+      bookingReference:
+        type: string
+        description: A free text reference you want to appear in the final invoice, so you can match it when validating our invoices
+      leadName:
+        type: string
+        description: The lead name
+      commentsToProvider:
+        type: string
+        description: Comments from the customer which should arrive to the circuit provider
+      privateComments:
+        type: string
+        description: Your comments for us. They will not be visible to the customer neither to the circuit provider
+      phoneNumber:
+        type: string
+        description: Your phone number to contact with you
+      email:
+        type: string
+        description: User Email. Used to locate your bookings
+      captchaToken:
+        type: string
+        description: Token for server validation captcha
+      supplements:
+        type: string
+        description: Booking extras
+      coupon:
+        type: string
+        description: Booking coupon discount
+    description: Parameters needed to confirm an circuit booking
+  GetGrantedHotelsRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      grantedHotels:
+        type: array
+        description: List of the granted hotels (and room ids, board basis ids, ...)
+        items:
+          $ref: '#/definitions/GrantedHotel'
+    description: Container for the getgrantedhotels response
+  GrantedHotel:
+    type: object
+    properties:
+      hotelId:
+        type: string
+        description: Thid hotel id
+      hotelName:
+        type: string
+        description: This hotel name
+      roomIds:
+        type: array
+        description: List of room ids valid for this hotel
+        items:
+          $ref: '#/definitions/RoomId'
+    description: Contains hotel information like rooms ids, etc
+  Pair:
+    type: object
+    properties:
+      key:
+        type: string
+        description: The name of this property
+      value:
+        type: string
+        description: The associated value
+    description: Pair name-value container
+  GetHotelRatesRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      currencyIsoCode:
+        type: string
+        description: Currency iso code for all rates
+      rates:
+        type: array
+        description: List of occupancies with available rates and supplements
+        items:
+          $ref: '#/definitions/Allocation'
+    description: Container for the getavailability response
+  GetHotelRatesRQ:
+    type: object
+    properties:
+      language:
+        type: string
+        description: 2 char language iso code
+      hotelId:
+        type: string
+        description: hotel id, as retrieved from hote available hotels response
+      checkin:
+        type: integer
+        format: int32
+        description: The locale checkin date in YYYYMMDD format
+      checkout:
+        type: integer
+        format: int32
+        description: The locale checkout date in YYYYMMDD format
+      occupancies:
+        type: string
+        description: 'Same as passed to the availability request. List comma separated list of occupancies you need in <nr of rooms>x<pax>[-<age>]* format. E.g.: 2x4-10-6-2,1x2 means 2 rooms occupied by 4 pax where 3 of them are 10, 6 and 2 years old and 1 room occupied by 2 pax'
+    description: Rq to get available hotel rates for each occupancy
+  BookCircuitRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      bookingId:
+        type: string
+        description: The resultant booking id. You will use it to later cancel the service, if you need to
+      fileId:
+        type: string
+      availableServices:
+        type: array
+        description: Available services to upsale your booking
+        items:
+          type: string
+      paymentUrl:
+        type: string
+        description: Generated URL to pay
+    description: Response for the circuit booking confirmation
+  BookActivityRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      bookingId:
+        type: string
+        description: The resultant booking id. You will use it to later cancel the service, if you need to
+      fileId:
+        type: string
+      availableServices:
+        type: array
+        description: Available services to upsale your booking
+        items:
+          type: string
+      paymentUrl:
+        type: string
+        description: Generated URL to pay
+    description: Response for the activity booking confirmation
+  GetAvailableTransfersRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      labels:
+        type: array
+        items:
+          $ref: '#/definitions/Label'
+      minPrice:
+        type: number
+        format: double
+      maxPrice:
+        type: number
+        format: double
+      availableTransfers:
+        type: array
+        description: List of available transfers and their prices
+        items:
+          $ref: '#/definitions/AvailableTransfer'
+    description: Container for the getavailabletransfers response
+  GetUpdatedCartsRQ:
+    type: object
+    properties:
+      userId:
+        type: string
+      cartList:
+        type: array
+        items:
+          $ref: '#/definitions/CartList'
+  GetActivityRatesRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      variants:
+        type: array
+        items:
+          $ref: '#/definitions/ActivityVariant'
+      shifts:
+        type: array
+        items:
+          $ref: '#/definitions/ActivityShift'
+    description: Container for the activity price details
+  UpdateOperation:
+    type: object
+    properties:
+      hotelId:
+        type: string
+        description: Hotel id you got when you called the getgrantedhotels method
+      roomId:
+        type: string
+        description: Room id you got when you called the getgrantedhotels method
+      action:
+        type: string
+        description: Action you want to perform. E.g. STOPSALES, OPENSALES, SETPRICE, SETALLOTMENT, ...
+      startDate:
+        type: integer
+        format: int32
+        description: Locale date this data starts appliance. In format YYYMMDD
+      endDate:
+        type: integer
+        format: int32
+        description: Locale date this data ends appliance. In format YYYMMDD
+      newValue:
+        type: string
+        description: New value to be set
+    description: Describes an update operation, like modifying allotment, prices or stop sales
+  CheckActivityRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      available:
+        type: boolean
+        default: false
+      value:
+        $ref: '#/definitions/Amount'
+      key:
+        type: string
+  BookHotelRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      bookingId:
+        type: string
+        description: The booking id
+      fileId:
+        type: string
+        description: The file id
+      availableServices:
+        type: array
+        description: Available services for upselling
+        items:
+          type: string
+      paymentUrl:
+        type: string
+        description: Generated URL to pay
+    description: Container for the hotel booking confirmation response
+  HotelAvailabilityCalendarDay:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      posInWeek:
+        type: integer
+        format: int32
+      day:
+        type: integer
+        format: int32
+      date:
+        type: string
+      styleName:
+        type: string
+      blank:
+        type: boolean
+        default: false
+    description: A calendar day
+  TicketCheckItem:
+    type: object
+    properties:
+      id:
+        type: string
+      qrcode:
+        type: string
+      leadname:
+        type: string
+      pax:
+        type: integer
+        format: int32
+      checkedDate:
+        type: integer
+        format: int32
+      checkedTime:
+        type: integer
+        format: int32
+      checked:
+        type: boolean
+        default: false
+      comments:
+        type: string
+  BookFlightRQ:
+    type: object
+    properties:
+      fileId:
+        type: string
+      departureKey:
+        type: string
+      returnKey:
+        type: string
+      bookingReference:
+        type: string
+        description: A free text reference you want to appear in the final invoice, so you can match it when validating our invoices
+      leadName:
+        type: string
+        description: The lead name
+      commentsToProvider:
+        type: string
+        description: Comments from the customer which should arrive to the activity provider
+      privateComments:
+        type: string
+        description: Your comments for us. They will not be visible to the customer neither to the activity provider
+      contactPhone:
+        type: string
+        description: Contact telephone number
+      email:
+        type: string
+        description: User Email. Used to locate your bookings
+      captchaToken:
+        type: string
+        description: Token for server validation captcha
+      language:
+        type: string
+        description: User language
+      supplements:
+        type: string
+        description: Booking extras
+      promoCode:
+        type: string
+        description: Booking promo code for discount
+      mailingUnwanted:
+        type: boolean
+        default: false
+      pax:
+        type: array
+        description: Passengers info. Applies only when confirming
+        items:
+          $ref: '#/definitions/PaxDetails'
+  BookHotelRQ:
+    type: object
+    properties:
+      language:
+        type: string
+        description: 2 char language iso code
+      hotelId:
+        type: string
+        description: hotel id, as retrieved from hote available hotels response
+      checkin:
+        type: integer
+        format: int32
+        description: The locale checkin date in YYYYMMDD format
+      checkout:
+        type: integer
+        format: int32
+        description: The locale checkout date in YYYYMMDD format
+      stays:
+        type: array
+        description: List of stays (occupancies with desired room and board)
+        items:
+          $ref: '#/definitions/Stay'
+      promoCode:
+        type: string
+        description: Promo code
+      fileId:
+        type: string
+      bookingReference:
+        type: string
+        description: A free text reference you want to appear in the final invoice, so you can match it when validating our invoices
+      leadName:
+        type: string
+        description: The lead name
+      email:
+        type: string
+        description: User Email. Used to locate your bookings
+      phoneNumber:
+        type: string
+        description: Your phone number to contact with you
+      commentsToProvider:
+        type: string
+        description: Comments from the customer which should arrive to the activity provider
+      privateComments:
+        type: string
+        description: Your comments for us. They will not be visible to the customer neither to the activity provider
+      captchaToken:
+        type: string
+        description: Token for server validation captcha
+      mailingUnwanted:
+        type: boolean
+        description: Set to true if the customer does not want to receive publicity and info emails
+        default: false
+    description: Container for the hotel booking confirmation request
+  BookActivityRQ:
+    type: object
+    properties:
+      fileId:
+        type: string
+      key:
+        type: string
+      pickup:
+        type: string
+      date:
+        type: integer
+        format: int32
+      language:
+        type: string
+      activityLanguage:
+        type: string
+      shiftId:
+        type: string
+      adults:
+        type: integer
+        format: int32
+      children:
+        type: integer
+        format: int32
+      infants:
+        type: integer
+        format: int32
+      supplementIds:
+        type: string
+      mailingUnwanted:
+        type: boolean
+        default: false
+      bookingReference:
+        type: string
+        description: A free text reference you want to appear in the final invoice, so you can match it when validating our invoices
+      leadName:
+        type: string
+        description: The lead name
+      commentsToProvider:
+        type: string
+        description: Comments from the customer which should arrive to the activity provider
+      privateComments:
+        type: string
+        description: Your comments for us. They will not be visible to the customer neither to the activity provider
+      roomNumber:
+        type: string
+        description: Your room number to contact with you
+      phoneNumber:
+        type: string
+        description: Your phone number to contact with you
+      email:
+        type: string
+        description: Your email to contact with tou
+      captchaToken:
+        type: string
+        description: Token for server validation captcha
+      supplements:
+        type: string
+        description: Booking extras
+      coupon:
+        type: string
+        description: Booking coupon discount
+    description: Parameters needed to confirm an activity booking
+  BookFlightRS:
+    type: object
+    properties:
+      statusCode:
+        type: integer
+        format: int32
+        description: status code for the operation. It will be 200 if it was OK and any other value if something went wrong. Provider dependant
+      msg:
+        type: string
+        description: error message, if needed
+      systemTime:
+        type: string
+        description: System time in ISO8651 format. Useful for bug resolution
+      bookingId:
+        type: string
+        description: The resultant booking id. You will use it to later cancel the service, if you need to
+      fileId:
+        type: string
+      availableServices:
+        type: array
+        description: Available services to upsale your booking
+        items:
+          type: string
+      paymentUrl:
+        type: string
+        description: Generated URL to pay
