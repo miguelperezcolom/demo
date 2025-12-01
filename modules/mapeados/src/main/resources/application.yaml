@@ -1,0 +1,28 @@
+spring.application.name: mapeados
+server:
+  port: 8091
+
+spring:
+
+  mongodb:
+    uri: mongodb://localhost:27017/mapeados
+
+  cloud:
+    function:
+      #definition: '' # Asegúrate de que no hay funciones definidas si solo usas StreamBridge
+      # 3. Asocia la función (el nombre del @Bean) con la entrada/binding
+      definition: procesarMiTopico # Debe coincidir con el nombre del método @Bean
+    stream:
+      bindings:
+        procesarMiTopico-in-0:
+          destination: nombre-del-topico-kafka # El mismo tópico que usaste para enviar
+          group: mi-grupo-consumidor # Importante: Define el Grupo de Consumo de Kafka
+        # El nombre 'miTopicoSalida' debe coincidir con el usado en StreamBridge.send()
+        miTopicoSalida-out-0:
+          destination: nombre-del-topico-kafka # El nombre real de tu tópico
+      kafka:
+        binder:
+          brokers: localhost:9092 # O la dirección de tu broker
+          configuration:
+            key.serializer: org.apache.kafka.common.serialization.StringSerializer
+            value.serializer: org.springframework.kafka.support.serializer.JsonSerializer

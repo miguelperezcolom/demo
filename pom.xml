@@ -17,5 +17,6 @@
         <module>modules/ms1</module>
         <module>modules/ms2</module>
         <module>modules/camunda</module>
+        <module>modules/shared</module>
     </modules>
 </project>
