@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Document(collection = "mapeados")
+@Table("mapeado")
 @AllArgsConstructor@NoArgsConstructor
 @Getter
 public class MapeadoEntity {

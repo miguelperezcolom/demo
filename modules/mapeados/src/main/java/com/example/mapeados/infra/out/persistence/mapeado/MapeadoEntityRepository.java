@@ -1,6 +1,6 @@
 package com.example.mapeados.infra.out.persistence.mapeado;
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
-public interface MapeadoEntityRepository extends ReactiveMongoRepository<MapeadoEntity, String> {
+public interface MapeadoEntityRepository extends ReactiveCrudRepository<MapeadoEntity, String> {
 }

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MongoMapeadoRepository implements MapeadoRepository {
@@ -37,5 +39,10 @@ public class MongoMapeadoRepository implements MapeadoRepository {
                 ))
                 .flatMap(repository::save)
                 .map(e -> mapeado);
+    }
+
+    @Override
+    public Mono<Void> delete(Mapeado mapeado) {
+        return repository.findById(mapeado.id().id()).flatMap(repository::delete);
     }
 }

@@ -28,7 +28,7 @@ class CrearMapeadoUseCaseTest {
 
     @Test
     void graba() {
-        var e = new MapeadoEntity("1", "tipo", "riu", "tercero");
+        var e = new MapeadoEntity("1", "tui", "tipo", "riu", "tercero");
         mapeadoEntityRepository.save(e).block();
         var count = mapeadoEntityRepository.findAll().count().block();
         assertEquals(1, count);

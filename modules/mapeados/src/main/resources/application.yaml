@@ -2,10 +2,23 @@ spring.application.name: mapeados
 server:
   port: 8091
 
+logging:
+  level:
+    org:
+      springframework:
+        r2dbc:
+          connection:
+            init: DEBUG
+    io:
+      r2dbc:
+        mariadb: DEBUG
 spring:
 
-  mongodb:
-    uri: mongodb://localhost:27017/mapeados
+  r2dbc:
+    url: r2dbc:mariadb://127.0.0.1:3306/mapeados
+    username: root
+    password: 6If6qC7IO1
+    initialization-mode: always
 
   cloud:
     function:
