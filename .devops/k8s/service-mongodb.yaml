@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: my-mongodb
+    meta.helm.sh/release-namespace: mperezco
+  creationTimestamp: "2025-12-01T14:38:16Z"
+  labels:
+    app.kubernetes.io/component: mongodb
+    app.kubernetes.io/instance: my-mongodb
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mongodb
+    app.kubernetes.io/version: 8.2.2
+    helm.sh/chart: mongodb-18.1.10
+  name: my-mongodb
+  namespace: mperezco
+  resourceVersion: "118161"
+  uid: d958b39c-c1ab-4a5b-9722-02ea94e2c542
+spec:
+  clusterIP: 10.43.93.127
+  clusterIPs:
+  - 10.43.93.127
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: mongodb
+    port: 27017
+    protocol: TCP
+    targetPort: mongodb
+  selector:
+    app.kubernetes.io/component: mongodb
+    app.kubernetes.io/instance: my-mongodb
+    app.kubernetes.io/name: mongodb
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
