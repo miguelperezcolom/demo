@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redpanda-connect-deployment
+  namespace: mperezco
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redpanda-connect
+  template:
+    metadata:
+      labels:
+        app: redpanda-connect
+    spec:
+      containers:
+        - name: connect
+          # ¡CORRECCIÓN AQUÍ! Usar el registro oficial de Quay.io
+          image: quay.io/debezium/connect:latest
+          ports:
+            - containerPort: 8083 # Puerto REST API
+          env:
+            - name: BOOTSTRAP_SERVERS
+              value: "redpanda-bootstrap:9092" # <-- Nombre del Service de tu Redpanda
+            - name: GROUP_ID
+              value: "connect-cluster-group"
+            - name: CONFIG_STORAGE_TOPIC
+              value: "connect-configs"
+            - name: OFFSET_STORAGE_TOPIC
+              value: "connect-offsets"
+            - name: STATUS_STORAGE_TOPIC
+              value: "connect-status"
+            - name: CONNECT_REST_ADVERTISED_HOST_NAME
+              value: "redpanda-connect-deployment"

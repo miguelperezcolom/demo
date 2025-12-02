@@ -1,0 +1,20 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnect
+metadata:
+  name: kafka-connect-cluster
+  namespace: mperezco
+spec:
+  version: 3.6.1 # Versión de Apache Kafka Connect
+  replicas: 1 # Número de Pods a desplegar
+  bootstrapServers: redpanda-cluster-kafka-bootstrap:9092 # <-- ¡Asegúrate de que esta URL apunta a tu servicio Redpanda!
+
+  # Incluir el conector Debezium MySQL/MariaDB en la imagen base
+  build:
+    output:
+      type: imagestream
+      image: connect-debezium
+    plugins:
+      - name: debezium-connector-mysql
+        artifact:
+          type: zip
+          url: https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/2.4.0.Final/debezium-connector-mysql-2.4.0.Final-plugin.zip

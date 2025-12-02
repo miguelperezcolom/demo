@@ -1,0 +1,50 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: mariadb-cdc-connector
+  namespace: mperezco # Asegúrate de usar el namespace correcto
+spec:
+  class: io.debezium.connector.mysql.MySqlConnector # MariaDB es compatible con el conector MySQL de Debezium
+  tasksMax: 1
+  config:
+    # ----------------------------------------------------
+    # 1. Configuración de Conexión a MariaDB
+    # ----------------------------------------------------
+    database.hostname: mariadb
+    database.port: "3306"
+
+    # Credenciales del usuario que creamos con REPLICATION SLAVE
+    database.user: debezium_user
+    database.password: tu_contraseña_cdc_segura
+
+    # ----------------------------------------------------
+    # 2. Configuración de Servidor/Binlog
+    # ----------------------------------------------------
+    # Un nombre lógico único para este servidor de base de datos.
+    # Se usa como prefijo para los temas de Kafka (ej: production_mariadb.mi_tabla)
+    database.server.name: production_mariadb
+
+    # Un ID de servidor único para el cliente de replicación (Debezium). Debe ser > 1.
+    database.server.id: "5432"
+
+    # Manejo del TimeZone, crucial para evitar errores de fecha/hora
+    database.history.kafka.topic: cdc_history_mariadb_topic # Tema para guardar el progreso del Binlog
+
+    # ----------------------------------------------------
+    # 3. Filtrado y Formato de Datos
+    # ----------------------------------------------------
+    # Base de datos a incluir (por defecto, todas)
+    # database.include.list: mi_base_de_datos
+
+    # Tablas a incluir (ej: database.include.list: mi_base_de_datos.tabla1,mi_base_de_datos.tabla2)
+    # table.include.list:
+
+    # El conector se conectará y leerá el Binlog desde el punto más reciente.
+    snapshot.mode: initial # 'initial' hace una copia de seguridad y luego CDC. 'when_needed' solo hace CDC si no hay historia.
+
+    # Especifica el formato de salida para los valores (opcional)
+    key.converter.schemas.enable: "true"
+    value.converter.schemas.enable: "true"
+
+    # Establece la estrategia de conversión para datos geométricos/binarios
+    binary.handling.mode: "bytes"

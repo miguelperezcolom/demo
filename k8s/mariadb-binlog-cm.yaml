@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-binlog-config
+  namespace: mperezco
+data:
+  binlog.cnf: |
+    [mysqld]
+    server_id=1
+    log_bin=mysql-bin
+    binlog_format=ROW

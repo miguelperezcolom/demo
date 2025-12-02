@@ -1,0 +1,23 @@
+{
+  "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+  "database.hostname": "mariadb",
+  "database.port": "3306",
+  "database.user": "debezium_user",
+  "database.password": "tu_contraseña_cdc_segura",
+  "database.server.id": "184054",
+  "database.server.name": "mariadb_server_1",
+  "database.include.list": "mapeados",
+  "include.schema.changes": "false",
+  "topic.prefix": "cdc",
+  "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "key.converter.schemas.enable": "false",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": "false",
+  "snapshot.mode": "initial",
+  "schema.history.internal.kafka.bootstrap.servers": "redpanda-bootstrap:9092",
+  "schema.history.internal.kafka.topic": "cdc.mariadb_server_1.schema_history",
+  "schema.history.internal.kafka.key.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "schema.history.internal.kafka.key.converter.schemas.enable": "false",
+  "schema.history.internal.kafka.value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "schema.history.internal.kafka.value.converter.schemas.enable": "false"
+}

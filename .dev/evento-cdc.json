@@ -1,0 +1,35 @@
+{
+  "before": null,
+  "after": {
+    "id": "b58eaf48-de20-4490-8813-45708c7316d0",
+    "third_party": "TUI",
+    "type": "HOTEL",
+    "riu_code": "ffre",
+    "tp_code": "erfer",
+    "version": 1
+  },
+  "source": {
+    "version": "3.3.2.Final",
+    "connector": "mysql",
+    "name": "cdc",
+    "ts_ms": 1764685278000,
+    "snapshot": "false",
+    "db": "mapeados",
+    "sequence": null,
+    "ts_us": 1764685278000000,
+    "ts_ns": 1764685278000000000,
+    "table": "mapeado",
+    "server_id": 1,
+    "gtid": null,
+    "file": "mysql-bin.000002",
+    "pos": 1961,
+    "row": 0,
+    "thread": null,
+    "query": null
+  },
+  "transaction": null,
+  "op": "c",
+  "ts_ms": 1764685278080,
+  "ts_us": 1764685278080061,
+  "ts_ns": 1764685278080061033
+}

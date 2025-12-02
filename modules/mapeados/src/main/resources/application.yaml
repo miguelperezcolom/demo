@@ -17,7 +17,7 @@ spring:
   r2dbc:
     url: r2dbc:mariadb://127.0.0.1:3306/mapeados
     username: root
-    password: 6If6qC7IO1
+    password: riu
     initialization-mode: always
 
   cloud:

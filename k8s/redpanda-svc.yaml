@@ -1,0 +1,16 @@
+# redpanda-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redpanda-bootstrap
+  namespace: mperezco
+spec:
+  # Selector encontrado: ¡apuntando al Pod de broker!
+  selector:
+    app: redpanda-single
+  ports:
+    - name: kafka-broker
+      protocol: TCP
+      port: 9092         # Puerto que el Service expone
+      targetPort: 9092   # Puerto interno que el Pod de Redpanda escucha
+  type: ClusterIP

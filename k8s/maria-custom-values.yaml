@@ -1,0 +1,19 @@
+# custom-values.yaml (Sobreescritura con inyección de flags)
+auth:
+  rootPassword: riu
+
+primary:
+  persistence:
+    enabled: true
+
+  # Bloque para sobrescribir el comando de inicio
+  command:
+    - /bin/bash
+    - -c
+    - |
+      # Variables de entorno Bitnami para la configuración:
+      export MARIADB_EXTRA_FLAGS="--log-bin=mysql-bin --server-id=1 --binlog-format=ROW"
+      
+      # Ejecutar el script de inicio de Bitnami, que ahora leerá la variable
+      # MARIADB_EXTRA_FLAGS y la usará al iniciar el demonio de MariaDB.
+      exec /opt/bitnami/scripts/mariadb/entrypoint.sh /opt/bitnami/scripts/mariadb/run.sh

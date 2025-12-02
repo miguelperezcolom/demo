@@ -1,0 +1,1 @@
+helm upgrade --install redpanda-controller redpanda/operator --namespace mperezco --create-namespace --version v25.1.4 --set crds.enabled=true
