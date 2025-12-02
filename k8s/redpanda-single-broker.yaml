@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redpanda-single-broker
+  namespace: mperezco
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redpanda-single
+  template:
+    metadata:
+      labels:
+        app: redpanda-single
+    spec:
+      # 🔑 Bloque CLAVE para corregir el "Permission denied"
+      securityContext:
+        fsGroup: 1000 # El GID del grupo del contenedor tendrá acceso de escritura
+        runAsUser: 1000 # Opcional: Ejecuta el contenedor con este UID
+
+      containers:
+        - name: redpanda
+          image: redpandadata/redpanda:latest
+          imagePullPolicy: Always
+
+          command: ["rpk"]
+          args:
+            - "start"
+            - "--config" # Nuevo flag: Fuerza a rpk a usar esta ruta de trabajo
+            - "/var/lib/redpanda/data/redpanda.yaml" # Ruta que tiene permisos de escritura (gracias a fsGroup)-
+            - "--overprovisioned"
+            - "--smp"
+            - "1"
+            - "--memory"
+            - "1G"
+            - "--reserve-memory"
+            - "0M"
+            - "--node-id"
+            - "0"
+            - "--check=false"
+            # Listener RPC (Interno) - Esta es la clave
+            - "--rpc-addr=0.0.0.0:33145"
+            - "--advertise-rpc-addr=$(POD_IP):33145"
+
+            # Listener Kafka (Externo)
+            - "--kafka-addr=PLAINTEXT://0.0.0.0:9092"
+            - "--advertise-kafka-addr=PLAINTEXT://$(POD_IP):9092"
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+          ports:
+            - containerPort: 9092
+              name: kafka-ext
+
+          # Montar el PVC
+          volumeMounts:
+            - name: redpanda-data-volume
+              mountPath: /var/lib/redpanda/data
+
+      # Referencia al PVC que creaste
+      volumes:
+        - name: redpanda-data-volume
+          persistentVolumeClaim:
+            claimName: redpanda-data-pvc # <-- Nombre de tu PVC

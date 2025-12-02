@@ -1,0 +1,1 @@
+helm install my-mongodb bitnami/mongodb

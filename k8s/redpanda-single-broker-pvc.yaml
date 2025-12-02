@@ -1,0 +1,13 @@
+# redpanda-single-broker-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redpanda-data-pvc
+  namespace: mperezco
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: local-path # La que sí existe en tu cluster

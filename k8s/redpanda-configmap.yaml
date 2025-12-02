@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redpanda-single-broker
+  namespace: mperezco
+  labels:
+    app: redpanda-single
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redpanda-single
+  template:
+    metadata:
+      labels:
+        app: redpanda-single
+    spec:
+      # 🔑 1. Security Context: Corrige "Permission denied" en la ruta de datos
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      
+      containers:
+        - name: redpanda
+          image: redpandadata/redpanda:latest
+          imagePullPolicy: Always
+
+          # Opcional: Contexto de seguridad para capacidades de red de alto rendimiento
+          securityContext:
+            capabilities:
+              add: ["IPC_LOCK"]
+
+          # 💡 Comando de inicio (equivalente al docker run)
+          command: ["rpk"]
+          args:
+            - "start"
+            - "--overprovisioned"
+            - "--smp"
+            - "1"
+            - "--memory"
+            - "1G"
+            - "--reserve-memory"
+            - "0M"
+            - "--node-id"
+            - "0"
+            - "--check=false"
+            - "--kafka-addr"
+            - "PLAINTEXT://0.0.0.0:9092"
+            - "--advertise-kafka-addr"
+            - "PLAINTEXT://$(POD_IP):9092"
+          
+          # Variable de entorno para obtener la IP del Pod
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+          ports:
+            - containerPort: 9092
+              name: kafka-ext
+
+          volumeMounts:
+            # Montaje 1: Datos (al volumen PVC)
+            - name: redpanda-data-volume
+              mountPath: /var/lib/redpanda/data
+            # Montaje 2: Configuración (al ConfigMap, crucial: SOLO LECTURA)
+            - name: redpanda-config-vol
+              mountPath: /etc/redpanda
+              readOnly: true
+
+      # Referencias de los Volúmenes
+      volumes:
+        # Referencia 1: Volumen de Datos Persistentes (PVC creado previamente)
+        - name: redpanda-data-volume
+          persistentVolumeClaim:
+            claimName: redpanda-data-pvc
+        # Referencia 2: Configuración de solo lectura (ConfigMap creado previamente)
+        - name: redpanda-config-vol
+          configMap:
+            name: redpanda-config-readonly
