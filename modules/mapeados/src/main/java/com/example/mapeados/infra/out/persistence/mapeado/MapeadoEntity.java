@@ -1,14 +1,14 @@
 package com.example.mapeados.infra.out.persistence.mapeado;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("mapeado")
 @AllArgsConstructor@NoArgsConstructor
-@Getter
+@Getter@Setter
+@With
 public class MapeadoEntity {
 
     @Id
@@ -17,5 +17,7 @@ public class MapeadoEntity {
     String type;
     String riuCode;
     String tpCode;
+    @Version
+    int version;
 
 }

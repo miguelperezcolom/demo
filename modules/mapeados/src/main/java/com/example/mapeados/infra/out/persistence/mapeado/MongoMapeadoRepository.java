@@ -29,15 +29,27 @@ public class MongoMapeadoRepository implements MapeadoRepository {
 
     @Override
     public Mono<Mapeado> save(Mapeado mapeado) {
-        return Mono.just(mapeado)
-                .map(m -> new MapeadoEntity(
-                        mapeado.id().id(),
-                        mapeado.thirdParty().name(),
-                        mapeado.codeType().name(),
-                        mapeado.riuCode().value(),
-                        mapeado.thirdPartyCode().value()
-                ))
-                .flatMap(repository::save)
+        final String id = mapeado.id().id();
+
+        return repository.findById(id)
+                .flatMap(existingEntity -> {
+                    existingEntity.setThirdParty(mapeado.thirdParty().name());
+                    existingEntity.setType(mapeado.codeType().name());
+                    existingEntity.setRiuCode(mapeado.riuCode().value());
+                    existingEntity.setTpCode(mapeado.thirdPartyCode().value());
+                    return repository.save(existingEntity);
+                })
+                .switchIfEmpty(Mono.defer(() -> {
+                    MapeadoEntity newEntity = new MapeadoEntity(
+                            id,
+                            mapeado.thirdParty().name(),
+                            mapeado.codeType().name(),
+                            mapeado.riuCode().value(),
+                            mapeado.thirdPartyCode().value(),
+                            0
+                    );
+                    return repository.save(newEntity);
+                }))
                 .map(e -> mapeado);
     }
 
