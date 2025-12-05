@@ -2,9 +2,9 @@ package com.example.axonproducer.domain.aggregates;
 
 import com.example.axonproducer.domain.commands.CreateOrderCommand;
 import com.example.axonproducer.domain.commands.ShipOrderCommand;
-import com.example.axonproducer.domain.events.OrderConfirmedEvent;
-import com.example.axonproducer.domain.events.OrderCreatedEvent;
-import com.example.axonproducer.domain.events.OrderShippedEvent;
+import com.example.shared.events.OrderConfirmedEvent;
+import com.example.shared.events.OrderCreatedEvent;
+import com.example.shared.events.OrderShippedEvent;
 import com.example.axonproducer.domain.exceptions.UnconfirmedOrderException;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;

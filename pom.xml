@@ -19,5 +19,6 @@
         <module>modules/ms2</module>
         <module>modules/camunda</module>
         <module>modules/shared</module>
+        <module>modules/axon-shared</module>
     </modules>
 </project>
