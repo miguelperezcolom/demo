@@ -1,0 +1,157 @@
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+"prometheus-community" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "mongodb" chart repository
+...Successfully got an update from the "redpanda" chart repository
+...Successfully got an update from the "jetstack" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ helm install prometheus-stack prometheus-community/kube-prometheus-stack \
+    --namespace mperezco \
+    --set grafana.service.type=ClusterIP \
+    --set prometheus.service.type=ClusterIP
+NAME: prometheus-stack
+LAST DEPLOYED: Tue Dec  2 16:07:25 2025
+NAMESPACE: mperezco
+STATUS: deployed
+REVISION: 1
+NOTES:
+kube-prometheus-stack has been installed. Check its status by running:
+  kubectl --namespace mperezco get pods -l "release=prometheus-stack"
+
+Get Grafana 'admin' user password by running:
+
+  kubectl --namespace mperezco get secrets prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+
+Access Grafana local instance:
+
+  export POD_NAME=$(kubectl --namespace mperezco get pod -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=prometheus-stack" -oname)
+  kubectl --namespace mperezco port-forward $POD_NAME 3000
+
+Get your grafana admin user password by running:
+
+  kubectl get secret --namespace mperezco -l app.kubernetes.io/component=admin-secret -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
+
+
+Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ kubectl get secret --namespace mperezco -l app.kubernetes.io/component=admin-secret -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
+SXE0nq8Uqj4zy4KlrrrZLyPkIrUAyJNRYCD5O3g6
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$
+
+
+
+
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ Error from server (NotFound): namespaces "monitoring" not found
+kubectl port-forward --namespace mperezco svc/prometheus-stack-grafana 3000:80 &
+[1]+  Salida 1                kubectl port-forward --namespace monitoring svc/prometheus-stack-grafana 3000:80
+[1] 2457553
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ Forwarding from 127.0.0.1:3000 -> 3000
+Forwarding from [::1]:3000 -> 3000
+
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ helm repo add elastic https://helm.elastic.co
+helm repo update
+"elastic" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "elastic" chart repository
+...Successfully got an update from the "mongodb" chart repository
+...Successfully got an update from the "redpanda" chart repository
+...Successfully got an update from the "jetstack" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ helm install elasticsearch elastic/elasticsearch \
+    --namespace mperezco \
+    --set replicas=1 \
+    --set minimumMasterNodes=1
+NAME: elasticsearch
+LAST DEPLOYED: Tue Dec  2 16:09:35 2025
+NAMESPACE: mperezco
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Watch all cluster members come up.
+  $ kubectl get pods --namespace=mperezco -l app=elasticsearch-master -w
+2. Retrieve elastic user's password.
+  $ kubectl get secrets --namespace=mperezco elasticsearch-master-credentials -ojsonpath='{.data.password}' | base64 -d
+3. Test cluster health using Helm test.
+  $ helm --namespace=mperezco test elasticsearch
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$
+
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ helm install kibana elastic/kibana \
+    --namespace mperezco
+NAME: kibana
+LAST DEPLOYED: Tue Dec  2 16:10:17 2025
+NAMESPACE: mperezco
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+1. Watch all containers come up.
+  $ kubectl get pods --namespace=mperezco -l release=kibana -w
+2. Retrieve the elastic user's password.
+  $ kubectl get secrets --namespace=mperezco elasticsearch-master-credentials -ojsonpath='{.data.password}' | base64 -d
+3. Retrieve the kibana service account token.
+  $ kubectl get secrets --namespace=mperezco kibana-kibana-es-token -ojsonpath='{.data.token}' | base64 -d
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$
+
+
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ helm repo add fluent https://fluent.github.io/helm-charts
+helm repo update
+"fluent" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "mongodb" chart repository
+...Successfully got an update from the "elastic" chart repository
+...Successfully got an update from the "fluent" chart repository
+...Successfully got an update from the "jetstack" chart repository
+...Successfully got an update from the "redpanda" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$
+
+
+
+
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ helm install fluent-bit fluent/fluent-bit \
+    --namespace mperezco \
+    --set backend.type=es \
+    --set elasticsearch.host=elasticsearch-master \
+    --set elasticsearch.port=9200
+NAME: fluent-bit
+LAST DEPLOYED: Tue Dec  2 16:11:57 2025
+NAMESPACE: mperezco
+STATUS: deployed
+REVISION: 1
+NOTES:
+Get Fluent Bit build information by running these commands:
+
+export POD_NAME=$(kubectl get pods --namespace mperezco -l "app.kubernetes.io/name=fluent-bit,app.kubernetes.io/instance=fluent-bit" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace mperezco port-forward $POD_NAME 2020:2020
+curl http://127.0.0.1:2020
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$
+
+
+
+
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+helm repo update
+"jaegertracing" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "mongodb" chart repository
+...Successfully got an update from the "fluent" chart repository
+...Successfully got an update from the "jaegertracing" chart repository
+...Successfully got an update from the "elastic" chart repository
+...Successfully got an update from the "jetstack" chart repository
+...Successfully got an update from the "redpanda" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+mperezco@PERLANEGRA:~/IdeaProjects/demo/.devops/k8s$
+
+
+
+
+

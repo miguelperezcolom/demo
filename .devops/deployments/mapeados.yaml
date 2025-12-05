@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mapeados
+  namespace: mperezco
+  labels:
+    app: mapeados
+    component: api-service
+spec:
+  replicas: 2 # Recomendable para alta disponibilidad
+  selector:
+    matchLabels:
+      app: mapeados
+  template:
+    metadata:
+      labels:
+        app: mapeados
+    spec:
+      # MUY IMPORTANTE para registros locales no seguros como localhost:5000:
+      # Debe permitir al nodo acceder al registro local.
+      # Nota: En entornos de desarrollo, a veces es necesario configurar
+      # los nodos de K8s para que confíen en el registro inseguro.
+      imagePullSecrets:
+        - name: regcred # Si usas autenticación, si no, puedes omitir esta línea.
+      containers:
+        - name: mapeados-container
+          # RUTA COMPLETA DE TU IMAGEN
+          image: localhost:5000/mapeados:latest
+          ports:
+            - name: http-port
+              containerPort: 8091 # Puerto expuesto por tu aplicación Spring Boot
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
